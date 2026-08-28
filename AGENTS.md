@@ -11,6 +11,8 @@ covering one topic. Read a skill when its trigger applies; don't read them all u
 | `discover` | about to rely on memory for a Symfony API, route or service | `skills/discover/SKILL.md` |
 | `command` | creating a console command | `skills/command/SKILL.md` |
 | `controller` | creating a controller or an HTTP endpoint | `skills/controller/SKILL.md` |
+| `form` | building a server-rendered form | `skills/form/SKILL.md` |
+| `user` | the project needs a security user class | `skills/user/SKILL.md` |
 | `migration` | changing the database schema | `skills/migration/SKILL.md` |
 | `voter` | access depends on who is asking, not just on a role | `skills/voter/SKILL.md` |
 | `twig-extension` | a template needs a filter or function Twig lacks | `skills/twig-extension/SKILL.md` |

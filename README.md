@@ -35,18 +35,27 @@ carry no PHP templates, because rebuilding `make:*` as a prompt is worse than ru
 |---|---|
 | [`command`](skills/command/SKILL.md) | `make:command` |
 | [`controller`](skills/controller/SKILL.md) | `make:controller` |
+| [`form`](skills/form/SKILL.md) | `make:form` |
+| [`user`](skills/user/SKILL.md) | `make:user` |
 | [`migration`](skills/migration/SKILL.md) | `make:migration` |
 | [`voter`](skills/voter/SKILL.md) | `make:voter` |
 | [`twig-extension`](skills/twig-extension/SKILL.md) | `make:twig-extension` |
 
-### Why there is no entity or form skill
+### Why there is no entity or crud skill
 
-A maker gets a wrapper only if it runs to completion without prompting. `make:entity` asks
-for one property at a time in a loop and exposes no way to pass fields as arguments, and
-`make:form`, `make:user`, `make:crud` and `make:auth` prompt too. Writing a PHP template
-instead would be exactly the thing this repository argues against, so those skills are
-absent until `make:entity` accepts fields on the command line — a contribution we intend to
-make.
+A maker gets a wrapper only if every value it needs can be passed on the command line.
+
+Two makers fail that. `make:entity` gathers fields one at a time in a loop and offers no way
+to pass them. `make:crud` asks for the controller class name and stores it in a property
+that has neither an argument nor an option, so under `--no-interaction` it is never set.
+
+Writing a PHP template instead would be exactly the thing this repository argues against, so
+those two skills stay absent until the makers accept those values — contributions we intend
+to make ([maker-bundle#1810](https://github.com/symfony/maker-bundle/pull/1810) covers
+`make:entity`).
+
+`make:form` and `make:user` looked like the same case and are not: their questions only fill
+arguments and options that can be supplied, so they get wrappers like the rest.
 
 ## Installing
 

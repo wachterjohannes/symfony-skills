@@ -65,14 +65,20 @@ Four background skills:
 | `templates`       | Twig naming, fragments, AssetMapper                                   |
 | `discover`        | Look it up in the project instead of recalling it (see below)         |
 
-Plus maker wrappers for `command`, `controller`, `migration`, `voter` and `twig-extension`.
+Plus maker wrappers for `command`, `controller`, `form`, `migration`, `twig-extension`,
+`user` and `voter`.
 
-**Entity and Form are left out entirely** — not as templates, not at all. Their makers
-prompt, and a hand-written template would be the very thing this repository argues against.
-They come back once the blocking workstream below lands, and they drop into the existing
-structure unchanged.
+**Entity and Crud are left out entirely** — not as templates, not at all. Their makers need
+a value that cannot be passed in, and a hand-written template would be the very thing this
+repository argues against. They come back once the blocking workstream below lands, and they
+drop into the existing structure unchanged.
 
-## Blocking workstream: `--field` for `make:entity`
+Form and User were originally in this list and should not have been. Their questions only
+fill arguments and options that can be supplied, so `make:form ProductType Product` and
+`make:user User --is-entity --identity-property-name=email --with-password` run without
+prompting. Both now have wrappers.
+
+## Blocking workstreams
 
 `MakeEntity` has no non-interactive path at all. Its `while (true)` loop asks for one
 property per iteration, and the command exposes only `name`, `--api-resource`,
@@ -85,8 +91,15 @@ would call the command once per field and get the same result.
 
 Opened as [symfony/maker-bundle#1810](https://github.com/symfony/maker-bundle/pull/1810),
 scoped to plain fields — relations and enums keep their follow-up questions and stay
-interactive. It blocks the Entity and Form skills and nothing else; the rest of version one
-ships without it.
+interactive. It blocks the Entity skill and nothing else.
+
+### `--controller-class` for `make:crud`
+
+`MakeCrud` asks for the controller class name and assigns it to a typed property with no
+argument and no option behind it. Under `--no-interaction` the maker's `interact()` never
+runs, the property is never initialised, and generation fails on first access. A single
+option with a sensible default fixes it. Not yet opened; it blocks the Crud skill and
+nothing else.
 
 ## Structure
 
@@ -319,7 +332,8 @@ contradict each other. Worth watching whether it lands in the PR as written.
 
 ## Open questions
 
-- Does [maker-bundle#1810](https://github.com/symfony/maker-bundle/pull/1810) get accepted? Entity and Form depend on it.
+- Does [maker-bundle#1810](https://github.com/symfony/maker-bundle/pull/1810) get accepted? The Entity skill depends on it.
+- Does `make:crud` get a `--controller-class` option? The Crud skill depends on it.
 - Does Javier's `symfony console` suggestion land in the recipes PR?
 - Does this become an official Symfony repository, and via which distribution channel?
 
