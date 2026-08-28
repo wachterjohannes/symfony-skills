@@ -125,3 +125,45 @@ is already at ceiling for this agent, at least at n=3.
   independent run of `01-lock` without-skills specifically — enough reps to see whether the
   stall recurs at some stable rate or was a fluke — would settle more than widening to a
   fourth task right now.
+
+## Verification of this report
+
+Twelve `environment.txt` files are committed and all twelve read `isolation: clean`. They
+cover the last rep of each cell rather than all three, for the reason the report gives.
+
+### The control was not a control
+
+The report treats `01-lock`'s difference as unexplained, and offers a "decisiveness effect"
+as a plausible but unproven story. There is a simpler explanation, and it is checkable.
+
+`01-lock` opens with *"This application has a console command `app:send-reminders`"*. That is
+false on a fresh skeleton, so solving the task requires **creating a console command** — and
+`skills/command/SKILL.md` is triggered by exactly that: *"Use when creating a console command
+in a Symfony project."*
+
+So the with-skills arm had instructions for the step the task actually turns on, and the
+without-skills arm stalled on precisely that step, asking which of two readings applied. This
+is not sampling noise and not a mysterious confidence effect. It is a skill doing its job on
+a task that was labelled a control by mistake — the mistake is in the label, not the data.
+
+The consequence runs the other way from the report's conclusion: **02's results do not need
+discounting for a broken control**, because the control was never skill-free. What is lost is
+the control itself. Until one exists, this run has no independent check that the benchmark
+measures the skills rather than the setup.
+
+### What a control has to look like
+
+The current skills cover `cli-conventions`, `configuration`, `templates`, `discover`,
+`command`, `controller`, `form`, `migration`, `twig-extension`, `user` and `voter`. A control
+task must touch none of them — which rules out almost anything that involves scaffolding,
+configuration, routing or templates.
+
+A task in plain PHP is what remains: a value object, a domain calculation, a small
+transformation with tests. No maker, no config, no controller, no template. Handled
+separately from this record.
+
+### Unchanged assessment
+
+`03-post-authorization` is a genuine ceiling and the report is right to call it one: the
+checklist items are all failable, the skeleton ships no voter, and both variants write
+idiomatic ones anyway. That is a real null result for the `voter` skill at n=3.
