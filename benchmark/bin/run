@@ -23,11 +23,17 @@ esac
 # Override to benchmark a different agent. The prompt arrives on stdin.
 AGENT_CMD="${AGENT_CMD:-claude -p --dangerously-skip-permissions}"
 
-out="$here/results/$task/$variant"
-app="$out/app"
+# The project is built OUTSIDE this repository on purpose: an agent working
+# inside it would have the skills sitting in an ancestor directory and could
+# read them in either variant, which is exactly what the two variants are
+# supposed to differ by.
+workdir="${BENCHMARK_WORKDIR:-${TMPDIR:-/tmp}/symfony-skills-benchmark}"
 
-rm -rf "$out"
-mkdir -p "$out"
+out="$here/results/$task/$variant"
+app="$workdir/$task/$variant/app"
+
+rm -rf "$out" "$app"
+mkdir -p "$out" "$(dirname "$app")"
 
 symfony new "$app" --webapp --no-git >"$out/setup.log" 2>&1
 
@@ -46,6 +52,15 @@ fi
 $AGENT_CMD < "$task_dir/TASK.md" > "$out/agent.log" 2>&1 || true
 
 git add -A
-git diff --cached > "$out/diff.patch"
+
+# The lock files are ~90% of the raw diff and say nothing a reviewer needs.
+# What the agent installed is visible in composer.json, kept separately.
+git diff --cached -- . ':(exclude)composer.lock' ':(exclude)symfony.lock' > "$out/diff.patch"
+git diff --cached -- composer.json > "$out/packages.patch"
+
+# The Symfony skeleton ships a compose.yaml and agents tend to start it.
+if [ -f compose.yaml ] || [ -f docker-compose.yml ]; then
+    docker compose down -v >/dev/null 2>&1 || true
+fi
 
 echo "$out/diff.patch"

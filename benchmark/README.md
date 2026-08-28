@@ -44,6 +44,30 @@ The default `AGENT_CMD` passes `--dangerously-skip-permissions`, because the age
 edit files without a human confirming each one. It runs against a throwaway project created
 seconds earlier, and nothing else — read `bin/run` before you believe that.
 
+## What both variants inherit
+
+The agent runs under the user's own Claude Code configuration, so both variants inherit
+whatever is in `~/.claude/CLAUDE.md`, the globally installed skills, and any configured MCP
+servers. That is a constant across the two arms and does not invalidate the comparison, but
+it does bound what the numbers mean.
+
+It matters here more than usual: this machine's global `CLAUDE.md` already contains a
+Symfony instruction (*"use `symfony composer <script>` commands"*), which overlaps with the
+`cli-conventions` skill. The baseline is therefore stronger than a naive agent's, and any
+measured effect of the skills is a **lower bound**.
+
+Two contaminations are removed rather than merely noted:
+
+- The project is built in a temporary directory outside this repository. Built inside it,
+  the skills would sit in an ancestor directory and be readable in both variants.
+- `composer.lock` and `symfony.lock` are excluded from `diff.patch` — they were 89% of it
+  in the first run and say nothing a reviewer needs. What the agent installed stays visible
+  in `packages.patch`.
+
+For a genuinely clean baseline, run the agent under a separate `CLAUDE_CONFIG_DIR` with its
+own login. That is not wired in here, because the second profile has to be authenticated by
+hand.
+
 ## Reading the result
 
 A checklist item that passes in both variants proves nothing about the skills; the model
@@ -57,4 +81,8 @@ Run each task more than once before concluding anything. A single run is an anec
 The Symfony CLI, PHP, Composer, `jq`, and an agent on `PATH`. Each run creates a full
 Symfony project, so expect minutes and a network connection.
 
-`results/` is not committed.
+`results/` is not committed. Projects are built under `$TMPDIR/symfony-skills-benchmark`;
+override with `BENCHMARK_WORKDIR`.
+
+Agents tend to start the skeleton's `compose.yaml` for a database. `bin/run` shuts it down
+afterwards, but check `docker ps` if a run is interrupted.

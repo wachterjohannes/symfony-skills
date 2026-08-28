@@ -13,9 +13,9 @@ JUDGE_CMD="${JUDGE_CMD:-claude -p}"
 
 judge_one() {
     local variant="$1"
-    local patch="$here/results/$task/$variant/diff.patch"
+    local dir="$here/results/$task/$variant"
 
-    [ -f "$patch" ] || { echo "error: no diff for $task/$variant — run bin/run first" >&2; exit 1; }
+    [ -f "$dir/diff.patch" ] || { echo "error: no diff for $task/$variant — run bin/run first" >&2; exit 1; }
 
     $JUDGE_CMD <<PROMPT
 Below is a checklist and a diff produced by a coding agent on a fresh Symfony project.
@@ -30,9 +30,13 @@ Reply with JSON and nothing else:
 
 $(cat "$checklist")
 
+## Dependencies the agent added
+
+$(cat "$dir/packages.patch")
+
 ## Diff
 
-$(cat "$patch")
+$(cat "$dir/diff.patch")
 PROMPT
 }
 
