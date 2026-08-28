@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+# Run one benchmark task in one variant and capture the diff the agent produced.
+# Mechanical only: it never decides whether the result is good.
+#
+#   bin/run 01-lock with-skills
+#   bin/run 01-lock without-skills
+set -euo pipefail
+
+here="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+repo="$(cd "$here/.." && pwd)"
+
+task="${1:?usage: bin/run <task> <with-skills|without-skills>}"
+variant="${2:?usage: bin/run <task> <with-skills|without-skills>}"
+
+task_dir="$here/tasks/$task"
+[ -d "$task_dir" ] || { echo "error: no task '$task' in $here/tasks" >&2; exit 1; }
+
+case "$variant" in
+    with-skills|without-skills) ;;
+    *) echo "error: variant must be 'with-skills' or 'without-skills'" >&2; exit 1 ;;
+esac
+
+# Override to benchmark a different agent. The prompt arrives on stdin.
+AGENT_CMD="${AGENT_CMD:-claude -p --dangerously-skip-permissions}"
+
+out="$here/results/$task/$variant"
+app="$out/app"
+
+rm -rf "$out"
+mkdir -p "$out"
+
+symfony new "$app" --webapp --no-git >"$out/setup.log" 2>&1
+
+cd "$app"
+git init -q
+git add -A
+git -c user.email=benchmark@example.com -c user.name=benchmark commit -qm baseline
+
+if [ "$variant" = "with-skills" ]; then
+    mkdir -p .claude/skills
+    cp -R "$repo/skills/." .claude/skills/
+    # not part of what the agent produced
+    echo '.claude/' > .git/info/exclude
+fi
+
+$AGENT_CMD < "$task_dir/TASK.md" > "$out/agent.log" 2>&1 || true
+
+git add -A
+git diff --cached > "$out/diff.patch"
+
+echo "$out/diff.patch"

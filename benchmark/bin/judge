@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+# Score both variants of a task against its checklist and print one JSON object.
+# The checklist is binary on purpose — a scale would relabel a gut feeling.
+set -euo pipefail
+
+here="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+task="${1:?usage: bin/judge <task>}"
+checklist="$here/tasks/$task/CHECKLIST.md"
+[ -f "$checklist" ] || { echo "error: no checklist for task '$task'" >&2; exit 1; }
+
+JUDGE_CMD="${JUDGE_CMD:-claude -p}"
+
+judge_one() {
+    local variant="$1"
+    local patch="$here/results/$task/$variant/diff.patch"
+
+    [ -f "$patch" ] || { echo "error: no diff for $task/$variant — run bin/run first" >&2; exit 1; }
+
+    $JUDGE_CMD <<PROMPT
+Below is a checklist and a diff produced by a coding agent on a fresh Symfony project.
+
+Answer each checklist item with true or false, judged only on what the diff shows. An item
+you cannot confirm from the diff is false. Do not reward intent, only what was written.
+
+Reply with JSON and nothing else:
+{"items": [{"item": "<the checklist line>", "pass": true|false, "evidence": "<file:line or a short quote>"}]}
+
+## Checklist
+
+$(cat "$checklist")
+
+## Diff
+
+$(cat "$patch")
+PROMPT
+}
+
+printf '{"task": %s, "with_skills": %s, "without_skills": %s}\n' \
+    "$(printf '%s' "$task" | jq -R .)" \
+    "$(judge_one with-skills | sed -n '/{/,$p')" \
+    "$(judge_one without-skills | sed -n '/{/,$p')"
