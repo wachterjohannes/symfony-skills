@@ -4,5 +4,3 @@
   `#[Assert\Choice]`), not with hand-written `if` checks.
 - Returns 422 for invalid input without writing the error-handling code by hand — the
   framework produces it from the failed validation.
-- Requires `symfony/serializer` and `symfony/validator` if they are missing, rather than
-  falling back to manual parsing.
