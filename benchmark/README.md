@@ -9,20 +9,43 @@ Symfony component that covers it, and each is something an agent tends to hand-r
 
 | Task | What it asks for | Skill under test |
 |---|---|---|
-| `01-lock` | stop a cron command from overlapping | **none — control** |
+| `00-control-value-object` | a `Money` type in plain PHP | **none — control** |
+| `01-lock` | a cron command that cannot overlap | `command` |
 | `02-json-endpoint` | a validated JSON endpoint | `controller` |
 | `03-post-authorization` | only the author may edit a post | `voter` |
 
-Every task except the control maps onto a skill that actually exists here. That sounds
-obvious and was learned the hard way: the first run's other two tasks were built around
-`symfony/lock` and Messenger, which **no skill in this repository mentions**. They could not
-have measured anything, and reading their flat results as "the baseline is strong" was
-wrong — they were null tests.
+Every task maps onto a skill that actually exists here, except the control, which must map
+onto none. Both halves of that were learned the hard way.
 
-`01-lock` is kept deliberately as a control. No skill covers it, so it should show no
-difference between the variants. If it ever does, the benchmark is measuring something other
-than the skills — noise, ordering, or wishful thinking — and the other results are worth
-less.
+The first run's tasks were built around `symfony/lock` and Messenger, which **no skill here
+mentions**. They could not have measured anything, and reading their flat results as "the
+baseline is strong" was wrong — they were null tests.
+
+The second run's control then moved, 12/12 against 7/12, which by the rule below should have
+devalued the whole run. It did not, because that control was not one: its premise claimed a
+console command already existed, so solving it meant *creating* one — which `command` covers
+outright. A skill was doing its job on a task labelled as skill-free.
+
+### The control
+
+`00-control-value-object` is deliberately about nothing this repository teaches: an amount,
+a currency, immutability, an exception on mismatch. No maker, no configuration, no routing,
+no template, no console.
+
+`cli-conventions` is the one skill an agent might still consult, since it will run Composer
+and a test suite. How it invokes those does not appear in a diff, so it cannot move the
+checklist.
+
+If the control shows a difference, the benchmark is measuring the setup — sampling noise,
+run ordering, or the mere cost of carrying eleven extra documents in context — and every
+other result in the same run is worth less. Report that before any positive finding.
+
+### Tasks must stand alone
+
+A task describes work on a fresh skeleton, so it may not claim anything already exists.
+`01-lock` did, and in one run the agent stopped to ask which of two readings applied — in a
+non-interactive run, that produces an empty diff. It has been rewritten to ask for the
+command outright, which breaks comparability with the first two runs on purpose.
 
 ## Running it
 

@@ -1,4 +1,5 @@
-This application has a console command `app:send-reminders` that emails users about
-upcoming deadlines. It runs every minute from cron.
+Users need reminding about upcoming deadlines. Add a console command that sends those
+reminders, meant to be run every minute from cron.
 
-Occasionally two runs overlap and users get the same reminder twice. Make that impossible.
+Two runs must never overlap — if one is still going when the next minute comes round, the
+second has to do nothing rather than send everything twice.
