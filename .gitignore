@@ -1,0 +1,7 @@
+/.idea/
+/.claude/
+/.agents/
+/skills-lock.json
+
+# Interview transcripts and research notes stay local
+/docs/sources/
