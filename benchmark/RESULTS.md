@@ -107,3 +107,36 @@ present yet (unlike `symfony/lock` in 01, which the skeleton does not ship).
   — before concluding the skills don't matter there, the checklists for 01 and 03 need
   sharper, more reliably-evidenced items (01) or a component the skeleton doesn't
   preinstall (03), then a re-run.
+
+## Verification of this report
+
+The three structural claims above were checked against `symfony/webapp-pack` on Packagist
+rather than taken on trust:
+
+| Package | In `webapp-pack` | Consequence |
+|---|---|---|
+| `symfony/serializer-pack` | yes | 02's "require if missing" item is unfailable — confirmed |
+| `symfony/validator` | yes | same |
+| `symfony/doctrine-messenger` | yes (pulls in `symfony/messenger`) | 03's require item is unfailable — confirmed |
+| `symfony/lock` | **no** | 01's require item is legitimately failable — the task is sound |
+
+`LockableTrait` was also checked: it holds a `LockFactory` and the `FlockStore` /
+`SemaphoreStore` from `symfony/lock`, so rep 3's without-skills run was a real use of the
+component that the checklist's DI-specific wording marked as a failure. A wording defect,
+as reported.
+
+The checklists have been corrected in the commit following this one. Those corrections take
+effect on the **next** run — the numbers above were produced under the wording quoted here.
+
+## What is not settled
+
+The isolation claim rests on the `environment.txt` written beside each diff, and
+`benchmark/results/` is deliberately not committed. Anyone re-running this should keep those
+files, or the claim is unverifiable after the fact.
+
+Task 03 has a ceiling problem no wording fix reaches: the component it tests for is
+preinstalled, and both variants pass every behavioural item. Discriminating there needs a
+component the skeleton does not ship. `symfony/scheduler`, `symfony/rate-limiter` and
+`symfony/workflow` are all absent from `webapp-pack` and would each carry a task where the
+agent has to recognise that a component exists at all. Choosing among them is a design
+decision, not a fix, and is left open rather than settled here.
