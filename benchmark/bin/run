@@ -63,8 +63,12 @@ workdir="${BENCHMARK_WORKDIR:-${TMPDIR:-/tmp}/symfony-skills-benchmark}"
 out="$here/results/$task/$variant"
 app="$workdir/$task/$variant/app"
 
+# Evidence lives one level up, because $out is cleared on every invocation and a
+# repetition would otherwise erase the record of the one before it.
+evidence="$here/results/$task/evidence"
+
 rm -rf "$out" "$app"
-mkdir -p "$out" "$(dirname "$app")"
+mkdir -p "$out" "$evidence" "$(dirname "$app")"
 
 symfony new "$app" --webapp --no-git >"$out/setup.log" 2>&1
 
@@ -111,7 +115,7 @@ fi
     echo "agent: $AGENT_CMD"
     echo "date: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
     echo "symfony-cli: $(symfony version --no-ansi 2>/dev/null | head -1)"
-} > "$out/environment.txt"
+} | tee "$out/environment.txt" > "$evidence/$variant-$(date -u +%Y%m%dT%H%M%SZ).txt"
 
 [ -n "$agent_config" ] && rm -rf "$agent_config"
 

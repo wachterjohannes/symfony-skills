@@ -125,7 +125,10 @@ Run each task more than once before concluding anything. A single run is an anec
 The Symfony CLI, PHP, Composer, `jq`, and an agent on `PATH`. Each run creates a full
 Symfony project, so expect minutes and a network connection.
 
-`results/` is not committed. Projects are built under `$TMPDIR/symfony-skills-benchmark`;
+Evidence is committed, artifacts are not. Every run drops a timestamped file into
+`results/<task>/evidence/` recording its isolation mode, agent and date; that directory
+survives the clearing `bin/run` does on each invocation, so a repetition cannot erase the
+record of the one before it. `diff.patch`, `agent.log` and the rest stay local. Projects are built under `$TMPDIR/symfony-skills-benchmark`;
 override with `BENCHMARK_WORKDIR`.
 
 Agents tend to start the skeleton's `compose.yaml` for a database. `bin/run` shuts it down

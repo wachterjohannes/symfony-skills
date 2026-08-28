@@ -6,9 +6,10 @@
 # Interview transcripts and research notes stay local
 /docs/sources/
 
-# Per-run artifacts stay local (large, and their conclusions belong in RESULTS*.md) —
-# but environment.txt (the isolation claim) and verdict-*.json (the scores) are small
-# and are the evidence a benchmark PR should carry, so they are not excluded here.
+# Per-run artifacts stay local (large, and their conclusions belong in RESULTS*.md).
+# results/<task>/evidence/ holds one timestamped environment file per run and survives
+# the clearing that happens on every invocation — that plus verdict-*.json is the
+# evidence a benchmark PR carries, and neither is excluded here.
 /benchmark/results/*/*/setup.log
 /benchmark/results/*/*/agent.log
 /benchmark/results/*/*/diff.patch
