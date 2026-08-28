@@ -21,7 +21,38 @@ case "$variant" in
 esac
 
 # Override to benchmark a different agent. The prompt arrives on stdin.
-AGENT_CMD="${AGENT_CMD:-claude -p --dangerously-skip-permissions}"
+AGENT_CMD="${AGENT_CMD:-claude -p --dangerously-skip-permissions --strict-mcp-config}"
+
+# A pristine CLAUDE_CONFIG_DIR keeps the operator's own CLAUDE.md, globally
+# installed skills, plugins and MCP servers out of the run — otherwise both
+# variants silently inherit them and the baseline is not a baseline.
+#
+# The login is bound to the config directory, so an isolated run needs its own
+# credential. Create one once with `claude setup-token` and export it as
+# CLAUDE_CODE_OAUTH_TOKEN, or use ANTHROPIC_API_KEY.
+agent_config=""
+if [ -n "${CLAUDE_CODE_OAUTH_TOKEN:-}" ] || [ -n "${ANTHROPIC_API_KEY:-}" ]; then
+    isolation="clean"
+    agent_config="$(mktemp -d)"
+elif [ "${BENCHMARK_ALLOW_INHERITED:-0}" = "1" ]; then
+    isolation="inherited"
+else
+    cat >&2 <<'MSG'
+error: refusing to run without an isolated agent configuration.
+
+Without it the agent inherits ~/.claude/CLAUDE.md, the globally installed
+skills and any configured MCP servers — in both variants — so the numbers
+say more about this machine than about the skills.
+
+  claude setup-token
+  export CLAUDE_CODE_OAUTH_TOKEN=<the token it prints>
+
+Set BENCHMARK_ALLOW_INHERITED=1 to run anyway. The mode is recorded in
+environment.txt either way, so a result can never claim to be clean when it
+was not.
+MSG
+    exit 1
+fi
 
 # The project is built OUTSIDE this repository on purpose: an agent working
 # inside it would have the skills sitting in an ancestor directory and could
@@ -49,7 +80,17 @@ if [ "$variant" = "with-skills" ]; then
     echo '.claude/' > .git/info/exclude
 fi
 
-$AGENT_CMD < "$task_dir/TASK.md" > "$out/agent.log" 2>&1 || true
+# Session plumbing from a surrounding Claude Code session would otherwise make
+# this run a child of it.
+env -u CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD \
+    -u CLAUDE_CODE_BRIDGE_SESSION_ID \
+    -u CLAUDE_CODE_CHILD_SESSION \
+    -u CLAUDE_CODE_ENTRYPOINT \
+    -u CLAUDE_CODE_MESSAGING_SOCKET \
+    -u CLAUDE_CODE_MESSAGING_TOKEN \
+    -u CLAUDE_CODE_SESSION_ID \
+    ${agent_config:+CLAUDE_CONFIG_DIR="$agent_config"} \
+    $AGENT_CMD < "$task_dir/TASK.md" > "$out/agent.log" 2>&1 || true
 
 git add -A
 
@@ -62,5 +103,14 @@ git diff --cached -- composer.json > "$out/packages.patch"
 if [ -f compose.yaml ] || [ -f docker-compose.yml ]; then
     docker compose down -v >/dev/null 2>&1 || true
 fi
+
+{
+    echo "isolation: $isolation"
+    echo "agent: $AGENT_CMD"
+    echo "date: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+    echo "symfony-cli: $(symfony version --no-ansi 2>/dev/null | head -1)"
+} > "$out/environment.txt"
+
+[ -n "$agent_config" ] && rm -rf "$agent_config"
 
 echo "$out/diff.patch"

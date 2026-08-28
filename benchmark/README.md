@@ -44,29 +44,39 @@ The default `AGENT_CMD` passes `--dangerously-skip-permissions`, because the age
 edit files without a human confirming each one. It runs against a throwaway project created
 seconds earlier, and nothing else — read `bin/run` before you believe that.
 
-## What both variants inherit
+## A clean environment
 
-The agent runs under the user's own Claude Code configuration, so both variants inherit
-whatever is in `~/.claude/CLAUDE.md`, the globally installed skills, and any configured MCP
-servers. That is a constant across the two arms and does not invalidate the comparison, but
-it does bound what the numbers mean.
+The agent runs under whatever Claude Code configuration it finds. Left alone that means
+both variants inherit the operator's `~/.claude/CLAUDE.md`, the globally installed skills,
+the plugins and any configured MCP servers — and then the baseline is not a baseline, it is
+that machine.
 
-It matters here more than usual: this machine's global `CLAUDE.md` already contains a
-Symfony instruction (*"use `symfony composer <script>` commands"*), which overlaps with the
-`cli-conventions` skill. The baseline is therefore stronger than a naive agent's, and any
-measured effect of the skills is a **lower bound**.
+On the machine this was written on, the global `CLAUDE.md` already carried a Symfony
+instruction (*"use `symfony composer <script>` commands"*), overlapping directly with the
+`cli-conventions` skill. A result measured that way understates the skills and is fair game
+for anyone who wants to dismiss it.
 
-Two contaminations are removed rather than merely noted:
+So `bin/run` refuses to start without an isolated configuration. Create a credential once:
+
+```bash
+claude setup-token
+export CLAUDE_CODE_OAUTH_TOKEN=<the token it prints>
+```
+
+Each run then gets a pristine `CLAUDE_CONFIG_DIR` — no user memory, no global skills, no
+plugins, no MCP — and the session variables of any surrounding Claude Code session are
+stripped from the child process. `ANTHROPIC_API_KEY` works in place of the token.
+
+`BENCHMARK_ALLOW_INHERITED=1` runs anyway. Either way the mode lands in `environment.txt`
+next to the diff, so a result can never claim to be clean when it was not.
+
+Two further contaminations are removed rather than noted:
 
 - The project is built in a temporary directory outside this repository. Built inside it,
   the skills would sit in an ancestor directory and be readable in both variants.
-- `composer.lock` and `symfony.lock` are excluded from `diff.patch` — they were 89% of it
-  in the first run and say nothing a reviewer needs. What the agent installed stays visible
-  in `packages.patch`.
-
-For a genuinely clean baseline, run the agent under a separate `CLAUDE_CONFIG_DIR` with its
-own login. That is not wired in here, because the second profile has to be authenticated by
-hand.
+- `composer.lock` and `symfony.lock` are excluded from `diff.patch` — 89% of it in the
+  first run, and nothing a reviewer needs. What the agent installed stays visible in
+  `packages.patch`.
 
 ## Reading the result
 
