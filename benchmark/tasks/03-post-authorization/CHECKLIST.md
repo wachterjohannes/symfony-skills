@@ -1,0 +1,8 @@
+- The rule lives in a security voter — a class extending `Voter` with `supports()` and
+  `voteOnAttribute()`, not an ownership comparison inside the controller action.
+- The voter is reached through the framework: `#[IsGranted]` on the action or
+  `denyAccessUnlessGranted()`, not by calling the voter directly.
+- The supported attribute is a constant on the voter (`PostVoter::EDIT`), not a bare string
+  repeated at the call site.
+- The 403 comes from the security layer, not from a hand-built `AccessDeniedException` or a
+  manual `Response(403)` after an `if`.

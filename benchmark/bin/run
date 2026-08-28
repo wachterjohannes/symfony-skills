@@ -94,9 +94,11 @@ env -u CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD \
 
 git add -A
 
-# The lock files are ~90% of the raw diff and say nothing a reviewer needs.
-# What the agent installed is visible in composer.json, kept separately.
-git diff --cached -- . ':(exclude)composer.lock' ':(exclude)symfony.lock' > "$out/diff.patch"
+# composer.lock was 89% of the raw diff in the first run and says nothing a
+# reviewer needs. symfony.lock stays: it is small, and its recipe entries are
+# the evidence that a component was installed properly rather than wired by
+# hand — excluding it made that checklist item unjudgeable in the first run.
+git diff --cached -- . ':(exclude)composer.lock' > "$out/diff.patch"
 git diff --cached -- composer.json > "$out/packages.patch"
 
 # The Symfony skeleton ships a compose.yaml and agents tend to start it.

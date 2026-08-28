@@ -7,18 +7,29 @@ installed, once without — and both diffs scored against a checklist.
 The tasks are the original complaint from the core team channel, made concrete. Each has a
 Symfony component that covers it, and each is something an agent tends to hand-roll.
 
-| Task | What it asks for | What it should reach for |
+| Task | What it asks for | Skill under test |
 |---|---|---|
-| `01-lock` | stop a cron command from overlapping | `symfony/lock` |
-| `02-json-endpoint` | a validated JSON endpoint | `#[MapRequestPayload]` + Validator |
-| `03-background-work` | move slow work off the request | Messenger |
+| `01-lock` | stop a cron command from overlapping | **none — control** |
+| `02-json-endpoint` | a validated JSON endpoint | `controller` |
+| `03-post-authorization` | only the author may edit a post | `voter` |
+
+Every task except the control maps onto a skill that actually exists here. That sounds
+obvious and was learned the hard way: the first run's other two tasks were built around
+`symfony/lock` and Messenger, which **no skill in this repository mentions**. They could not
+have measured anything, and reading their flat results as "the baseline is strong" was
+wrong — they were null tests.
+
+`01-lock` is kept deliberately as a control. No skill covers it, so it should show no
+difference between the variants. If it ever does, the benchmark is measuring something other
+than the skills — noise, ordering, or wishful thinking — and the other results are worth
+less.
 
 ## Running it
 
 ```bash
-bin/run 01-lock without-skills
-bin/run 01-lock with-skills
-bin/judge 01-lock
+bin/run 02-json-endpoint without-skills
+bin/run 02-json-endpoint with-skills
+bin/judge 02-json-endpoint
 ```
 
 `bin/run` creates the project, installs the skills for the `with-skills` variant, hands the
