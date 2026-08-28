@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# Download every configured documentation source into the snapshot directory.
+# Mechanical only: no judgement about what changed or what it means.
+set -euo pipefail
+
+here="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+config="$here/sources.json"
+snapshot="${1:-$here/snapshot}"
+
+base="$(jq -r .base "$config")"
+ref="$(jq -r .ref "$config")"
+
+mkdir -p "$snapshot"
+
+jq -r '.sources[].path' "$config" | while read -r path; do
+    target="$snapshot/$path"
+    mkdir -p "$(dirname "$target")"
+
+    status=$(curl -sSL -o "$target" -w '%{http_code}' "$base/$ref/$path")
+    if [ "$status" != "200" ]; then
+        echo "error: $base/$ref/$path returned $status" >&2
+        rm -f "$target"
+        exit 1
+    fi
+
+    echo "fetched $path"
+done
