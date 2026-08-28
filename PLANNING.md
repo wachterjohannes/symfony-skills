@@ -83,9 +83,10 @@ A `--field=name:string:255` option would be equivalent to the interactive loop: 
 iteration adds exactly one field, and `make:entity` on an existing entity appends. An agent
 would call the command once per field and get the same result.
 
-This is a contribution to `symfony/maker-bundle`, driven by us, tracked here because the
-Entity and Form skills depend on it. It blocks those two skills and nothing else — the rest
-of version one ships without it.
+Opened as [symfony/maker-bundle#1810](https://github.com/symfony/maker-bundle/pull/1810),
+scoped to plain fields — relations and enums keep their follow-up questions and stay
+interactive. It blocks the Entity and Form skills and nothing else; the rest of version one
+ships without it.
 
 ## Structure
 
@@ -185,7 +186,8 @@ A scale would just relabel a gut feeling. A checklist is per-line verifiable and
 shown in the core channel.
 
 Everything mechanical about this — spinning up the app, running the agents, producing the
-diff — is a script, not a prompt.
+diff — is a script, not a prompt. It lives in [`benchmark/`](benchmark/README.md):
+`bin/run` produces the diffs, `bin/judge` scores them.
 
 ## Content and updates
 
@@ -194,8 +196,10 @@ feed the skills is configurable.
 
 The update path splits along the same line as everything else:
 
-- **Script:** fetch the docs, diff against the current skills, open the pull request.
-- **Prompt:** judge whether a documentation change is relevant to our skills, and where.
+- **Script:** [`tools/update-skills/bin/fetch`](tools/update-skills/) downloads the
+  configured sources, `bin/diff` prints the hunks that moved, grouped by affected skill.
+- **Prompt:** `tools/update-skills/SKILL.md` judges whether a documentation change means a
+  skill is now wrong.
 
 That keeps the update mechanism subject to the repository's own writing rules instead of
 exempting it.
@@ -315,7 +319,7 @@ contradict each other. Worth watching whether it lands in the PR as written.
 
 ## Open questions
 
-- Does `--field` for `make:entity` get accepted? Entity and Form depend on it.
+- Does [maker-bundle#1810](https://github.com/symfony/maker-bundle/pull/1810) get accepted? Entity and Form depend on it.
 - Does Javier's `symfony console` suggestion land in the recipes PR?
 - Does this become an official Symfony repository, and via which distribution channel?
 
