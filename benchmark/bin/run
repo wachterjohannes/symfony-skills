@@ -20,8 +20,24 @@ case "$variant" in
     *) echo "error: variant must be 'with-skills' or 'without-skills'" >&2; exit 1 ;;
 esac
 
-# Override to benchmark a different agent. The prompt arrives on stdin.
-AGENT_CMD="${AGENT_CMD:-claude -p --dangerously-skip-permissions --strict-mcp-config}"
+# Which agent is being benchmarked. It decides where the skills are installed and how
+# isolation is arranged — the two things that differ per agent.
+AGENT_KIND="${AGENT_KIND:-claude}"
+
+# The model is pinned rather than left to whatever the host defaults to. The first three
+# runs did not record one, so they cannot be reproduced.
+case "$AGENT_KIND" in
+    claude)
+        AGENT_CMD="${AGENT_CMD:-claude -p --dangerously-skip-permissions --strict-mcp-config --model sonnet}"
+        ;;
+    opencode)
+        AGENT_CMD="${AGENT_CMD:?set AGENT_CMD for opencode, e.g. opencode run --model ollama/kimi-k2.7-code}"
+        ;;
+    *)
+        echo "error: AGENT_KIND must be 'claude' or 'opencode'" >&2
+        exit 1
+        ;;
+esac
 
 # A pristine CLAUDE_CONFIG_DIR keeps the operator's own CLAUDE.md, globally
 # installed skills, plugins and MCP servers out of the run — otherwise both
@@ -31,7 +47,13 @@ AGENT_CMD="${AGENT_CMD:-claude -p --dangerously-skip-permissions --strict-mcp-co
 # credential. Create one once with `claude setup-token` and export it as
 # CLAUDE_CODE_OAUTH_TOKEN, or use ANTHROPIC_API_KEY.
 agent_config=""
-if [ -n "${CLAUDE_CODE_OAUTH_TOKEN:-}" ] || [ -n "${ANTHROPIC_API_KEY:-}" ]; then
+if [ "$AGENT_KIND" = "opencode" ]; then
+    # opencode reads its configuration from XDG_CONFIG_HOME; an empty one removes the
+    # operator's global agents, MCP servers and instructions the same way a pristine
+    # CLAUDE_CONFIG_DIR does for Claude Code.
+    isolation="clean"
+    agent_config="$(mktemp -d)"
+elif [ -n "${CLAUDE_CODE_OAUTH_TOKEN:-}" ] || [ -n "${ANTHROPIC_API_KEY:-}" ]; then
     isolation="clean"
     agent_config="$(mktemp -d)"
 elif [ "${BENCHMARK_ALLOW_INHERITED:-0}" = "1" ]; then
@@ -78,15 +100,28 @@ git add -A
 git -c user.email=benchmark@example.com -c user.name=benchmark commit -qm baseline
 
 if [ "$variant" = "with-skills" ]; then
-    mkdir -p .claude/skills
-    cp -R "$repo/skills/." .claude/skills/
-    # not part of what the agent produced
-    echo '.claude/' > .git/info/exclude
+    case "$AGENT_KIND" in
+        claude)
+            mkdir -p .claude/skills
+            cp -R "$repo/skills/." .claude/skills/
+            echo '.claude/' > .git/info/exclude
+            ;;
+        opencode)
+            # opencode has no skill system, so this follows docs/opencode.md exactly:
+            # the folders plus the index from AGENTS.md, paths adjusted. Running the
+            # benchmark this way also exercises the install path we document.
+            mkdir -p .agents/skills
+            cp -R "$repo/skills/." .agents/skills/
+            sed 's|skills/|.agents/skills/|g' "$repo/AGENTS.md" > AGENTS.md
+            printf '.agents/\nAGENTS.md\n' > .git/info/exclude
+            ;;
+    esac
 fi
 
 # Session plumbing from a surrounding Claude Code session would otherwise make
 # this run a child of it.
-env -u CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD \
+env ${agent_config:+XDG_CONFIG_HOME="$agent_config"} \
+    -u CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD \
     -u CLAUDE_CODE_BRIDGE_SESSION_ID \
     -u CLAUDE_CODE_CHILD_SESSION \
     -u CLAUDE_CODE_ENTRYPOINT \
@@ -112,6 +147,7 @@ fi
 
 {
     echo "isolation: $isolation"
+    echo "agent-kind: $AGENT_KIND"
     echo "agent: $AGENT_CMD"
     echo "date: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
     echo "symfony-cli: $(symfony version --no-ansi 2>/dev/null | head -1)"

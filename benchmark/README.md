@@ -67,12 +67,34 @@ An LLM does the scoring because the agent's output is not deterministic: two run
 same task differ in wording, file layout and naming while being equally right or equally
 wrong. What stays comparable is whether `LockFactory` appears at all.
 
-Both commands take an override, so this is not tied to one agent or one judge:
+### Agents and models
+
+`AGENT_KIND` selects how a run is set up; it decides where the skills are installed and how
+the agent's own configuration is emptied.
 
 ```bash
-AGENT_CMD='codex exec' bin/run 01-lock with-skills
-JUDGE_CMD='claude -p --model opus' bin/judge 01-lock
+bin/run 02-json-endpoint with-skills                       # claude, sonnet, the default
+AGENT_CMD='claude -p --dangerously-skip-permissions --strict-mcp-config --model haiku' \
+    bin/run 02-json-endpoint with-skills                   # same agent, weaker model
+
+AGENT_KIND=opencode \
+AGENT_CMD='opencode run --model ollama/kimi-k2.7-code' \
+    bin/run 02-json-endpoint with-skills                   # different agent and model
 ```
+
+Change one variable at a time. Swapping the agent and the model together produces a
+difference nobody can attribute to either.
+
+Under `AGENT_KIND=opencode` the skills are installed the way `docs/opencode.md` describes —
+the folders under `.agents/skills` plus the index from `AGENTS.md` with its paths adjusted —
+so a run also exercises the copy-only install path this repository documents but has never
+otherwise tried. Isolation is an empty `XDG_CONFIG_HOME`, the equivalent of the pristine
+`CLAUDE_CONFIG_DIR` used for Claude Code.
+
+The model is pinned in the command and recorded in `evidence/`. The first three runs did not
+record one, so they cannot be reproduced exactly.
+
+`JUDGE_CMD` overrides the judge the same way.
 
 The default `AGENT_CMD` passes `--dangerously-skip-permissions`, because the agent has to
 edit files without a human confirming each one. It runs against a throwaway project created
