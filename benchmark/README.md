@@ -79,7 +79,7 @@ wrong. What stays comparable is whether `LockFactory` appears at all.
 the agent's own configuration is emptied.
 
 ```bash
-bin/run 02-json-endpoint with-skills                       # claude, sonnet, the default
+bin/run 02-json-endpoint with-skills                       # claude, opus 5, the default
 AGENT_CMD='claude -p --dangerously-skip-permissions --strict-mcp-config --model haiku' \
     bin/run 02-json-endpoint with-skills                   # same agent, weaker model
 
@@ -98,7 +98,8 @@ otherwise tried. Isolation is an empty `XDG_CONFIG_HOME`, the equivalent of the 
 `CLAUDE_CONFIG_DIR` used for Claude Code.
 
 The model is pinned in the command and recorded in `evidence/`. The first three runs did not
-record one, so they cannot be reproduced exactly.
+record theirs — they were Opus 5, which is the default here so that a plain `bin/run`
+continues that series rather than quietly starting a new one.
 
 `JUDGE_CMD` overrides the judge the same way.
 

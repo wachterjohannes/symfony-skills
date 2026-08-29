@@ -25,10 +25,11 @@ esac
 AGENT_KIND="${AGENT_KIND:-claude}"
 
 # The model is pinned rather than left to whatever the host defaults to. The first three
-# runs did not record one, so they cannot be reproduced.
+# runs did not record theirs; they were Opus 5, which is why that is the default here — a
+# run without an override continues the existing series rather than starting a new one.
 case "$AGENT_KIND" in
     claude)
-        AGENT_CMD="${AGENT_CMD:-claude -p --dangerously-skip-permissions --strict-mcp-config --model sonnet}"
+        AGENT_CMD="${AGENT_CMD:-claude -p --dangerously-skip-permissions --strict-mcp-config --model claude-opus-5}"
         ;;
     opencode)
         AGENT_CMD="${AGENT_CMD:?set AGENT_CMD for opencode, e.g. opencode run --model ollama/kimi-k2.7-code}"
