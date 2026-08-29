@@ -1,7 +1,3 @@
-This is the control. No skill in this repository covers any of it, so both variants should
-score the same. A difference here means the benchmark is measuring the setup rather than
-the skills — see `benchmark/README.md`.
-
 - The amount is an integer in minor units. Not a float, not a string, and not a library
   type pulled in for the purpose.
 - The type is immutable — adding or multiplying returns a new instance, and there is no

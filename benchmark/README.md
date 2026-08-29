@@ -36,9 +36,15 @@ no template, no console.
 and a test suite. How it invokes those does not appear in a diff, so it cannot move the
 checklist.
 
-If the control shows a difference, the benchmark is measuring the setup — sampling noise,
-run ordering, or the mere cost of carrying eleven extra documents in context — and every
-other result in the same run is worth less. Report that before any positive finding.
+If the control shows a difference, the benchmark is measuring the setup — sampling noise or
+the mere cost of carrying eleven extra documents in context — and every other result in the
+same run is worth less. Report that before any positive finding.
+
+None of that may appear in `tasks/00-control-value-object/CHECKLIST.md`. `bin/judge` puts the
+checklist into the judge's prompt verbatim, so a sentence there saying both variants should
+score the same is an instruction to the judge, not a note to the reader. It was there for one
+run; that run's flat control is weaker evidence than it looks, and the third run should be
+repeated before its control is cited.
 
 ### Tasks must stand alone
 
