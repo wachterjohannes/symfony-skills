@@ -116,3 +116,36 @@ held.**
 Overstating this would mean claiming three skills work; the honest claim is one skill shows
 a clean, three-times-replicated effect on a task it targets directly, and the benchmark
 correctly produced two flat nulls elsewhere rather than manufacturing false positives.
+
+## Verification of this report
+
+All 24 `evidence/` files are committed and every one reads `isolation: clean` — complete
+this time, since `bin/run` archives them itself. The headline row was read back from the raw
+verdicts rather than the table: `verdict-1/2/3.json` for `02-json-endpoint` each record
+`with=true, without=false` on the `#[MapRequestPayload]` item. 3/3 vs 0/3 stands.
+
+### The 422 row is a task defect, not a loose thread
+
+The report proposes sharpening that checklist item. The item should not be sharpened,
+because nothing in this repository teaches what it measures: `skills/controller/SKILL.md`
+said nothing about 422 or about exception listeners. It was testing behaviour no skill
+covers — the same defect that made two of the first run's tasks meaningless, only subtler,
+because this item is genuinely failable.
+
+The declining numbers (2/3 → 1/3 → 0/3 with-skills) are therefore not a regression in the
+skill. They are three samples of an agent doing something unrelated to it.
+
+There is a real finding underneath, and it runs against the skills: the with-skills arm
+keeps adding its own `ValidationExceptionListener`, and per the documentation
+(`controller.rst`, "The default status code returned if the validation fails is 422") the
+attribute already answers 422 with the violations. That listener is duplicated work.
+
+`controller/SKILL.md` now says so, and mentions `validationFailedStatusCode` for endpoints
+where 422 is wrong. The item becomes a legitimate measurement in the next run; its numbers
+here measured nothing.
+
+### Unchanged assessment
+
+The control held, `03` is a settled null across two independent runs, and `01` is a first
+flat observation under its corrected premise. The summary's own restraint — one skill with a
+replicated effect, two honest nulls — is what the evidence supports.
