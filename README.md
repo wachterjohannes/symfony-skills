@@ -34,6 +34,10 @@ carry no PHP templates, because rebuilding `make:*` as a prompt is worse than ru
 | Skill | Wraps |
 |---|---|
 | [`command`](skills/command/SKILL.md) | `make:command` |
+| [`crud`](skills/crud/SKILL.md) | `make:crud` |
+| [`entity`](skills/entity/SKILL.md) | `make:entity` |
+| [`listener`](skills/listener/SKILL.md) | `make:listener` |
+| [`test`](skills/test/SKILL.md) | `make:test` |
 | [`controller`](skills/controller/SKILL.md) | `make:controller` |
 | [`form`](skills/form/SKILL.md) | `make:form` |
 | [`user`](skills/user/SKILL.md) | `make:user` |
@@ -41,21 +45,21 @@ carry no PHP templates, because rebuilding `make:*` as a prompt is worse than ru
 | [`voter`](skills/voter/SKILL.md) | `make:voter` |
 | [`twig-extension`](skills/twig-extension/SKILL.md) | `make:twig-extension` |
 
-### Why there is no entity or crud skill
+### Which makers get a wrapper
 
-A maker gets a wrapper only if every value it needs can be passed on the command line.
+A maker gets one only if every value it needs can be passed on the command line. Counting the
+questions it asks is not that test — most of them merely fill an argument that could have been
+supplied, which is why `make:form` and `make:user` were wrongly excluded for a while.
 
-Two makers fail that. `make:entity` gathers fields one at a time in a loop and offers no way
-to pass them. `make:crud` asks for the controller class name and stores it in a property
-that has neither an argument nor an option, so under `--no-interaction` it is never set.
+`make:entity` and `make:crud` were genuinely blocked and no longer are:
+[maker-bundle#1810](https://github.com/symfony/maker-bundle/pull/1810) added `--field`,
+[#1813](https://github.com/symfony/maker-bundle/pull/1813) added `--relation`, and
+[#1814](https://github.com/symfony/maker-bundle/pull/1814) added `--controller-class` and
+fixed the crash that made `make:crud` unusable under `--no-interaction`.
 
-Writing a PHP template instead would be exactly the thing this repository argues against, so
-those two skills stay absent until the makers accept those values — contributions we intend
-to make ([maker-bundle#1810](https://github.com/symfony/maker-bundle/pull/1810) covers
-`make:entity`).
-
-`make:form` and `make:user` looked like the same case and are not: their questions only fill
-arguments and options that can be supplied, so they get wrappers like the rest.
+Still blocked, and still without a skill here: `make:schedule`, `make:auth`,
+`make:reset-password` and `make:registration-form`. Each needs a value that has no way in from
+the command line, and three of the four crash rather than fall back.
 
 ## Installing
 
