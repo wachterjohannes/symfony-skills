@@ -17,9 +17,9 @@ configuration tried (Sonnet 5, Haiku 4.5, Kimi K2.7 Code and DeepSeek V4 Flash, 
 two under OpenCode via the copy-only install path in `docs/opencode.md`). A very strong,
 model-independent effect; not an absolute one.
 
-**Two honest nulls.** `03-post-authorization` (the `voter` skill): 12/12 in both arms,
+**Two honest nulls.** `03-post-authorization` (the `make-voter` skill): 12/12 in both arms,
 twice independently — Opus writes idiomatic voters without being told. `01-lock` (the
-`command` skill, with `symfony/lock` as the component under test): 12/12 in both arms once
+`make-command` skill, with `symfony/lock` as the component under test): 12/12 in both arms once
 the task premise was fixed. Neither is a failure of the benchmark; both mean the skill
 documents what the strong models already do, which is an argument for keeping those skills
 short — or asking whether they earn their context lines at all.
@@ -31,7 +31,7 @@ difference seen in `02`.
 
 **A defect the benchmark found in the skills.** With the skills installed the agent kept
 adding a `ValidationExceptionListener` that `#[MapRequestPayload]` makes redundant — the
-attribute already answers 422 with the violations. `controller/SKILL.md` says so now.
+attribute already answers 422 with the violations. `make-controller/SKILL.md` says so now.
 Finding that is worth more than a third claimed success.
 
 **A hint, not a finding.** On the fourth run's model ladder, two effects that are ceilinged
@@ -52,14 +52,14 @@ setups, not one growing sample. What each one changed:
    `symfony new --webapp` preinstalls the packages they checked for. The `02` effect showed
    up here first.
 2. **Run 2** added a control that turned out not to be one: its premise claimed a console
-   command already existed, so solving it meant creating one — which the `command` skill
+   command already existed, so solving it meant creating one — which the `make-command` skill
    covers. The 12/12-vs-7/12 "control difference" was a skill doing its job under the wrong
    label. It also caught the without-skills agent stalling on the ambiguous premise, asking
    a question no one in a non-interactive run could answer.
 3. **Run 3** introduced the plain-PHP control, fixed the `01-lock` premise, and delivered
    the shape reported above: the `02` effect a third time exactly, two flat nulls, a flat
    control. It also diagnosed the `ValidationExceptionListener` habit and fixed the
-   `controller` skill.
+   `make-controller` skill.
 4. **Run 4** ran the model/agent ladder (120 agent runs, 60 judge calls) and cost two
    infrastructure bugs on the way: a uutils-`env` argument-order difference that silently
    disabled isolation for one whole configuration, and a shared results directory that let

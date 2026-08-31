@@ -1,5 +1,5 @@
 ---
-name: controller
+name: make-controller
 description: Use when creating a controller or an HTTP endpoint in a Symfony project.
 version: 1.1.0
 updated: 2026-08-29

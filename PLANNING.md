@@ -65,8 +65,9 @@ Four background skills:
 | `templates`       | Twig naming, fragments, AssetMapper                                   |
 | `discover`        | Look it up in the project instead of recalling it (see below)         |
 
-Plus maker wrappers for `command`, `controller`, `crud`, `entity`, `form`, `listener`,
-`migration`, `test`, `twig-extension`, `user` and `voter`.
+Plus maker wrappers for `make-command`, `make-controller`, `make-crud`, `make-entity`,
+`make-form`, `make-listener`, `make-migration`, `make-test`, `make-twig-extension`,
+`make-user` and `make-voter`.
 
 Entity and Crud were excluded while their makers needed a value that could not be passed in.
 Both landed. `make:test` and `make:listener` were never blocked at all — they take everything
@@ -195,7 +196,7 @@ The criterion is met. One skill shows a clean, replicated, cross-model effect on
 targets directly (`#[MapRequestPayload]` over `json_decode()`); two skills produced honest
 nulls — they document what the agent already does; the control held; and the benchmark
 found a defect in the skills themselves (a redundant `ValidationExceptionListener` the
-`controller` skill now warns against).
+`make-controller` skill now warns against).
 
 The harness stays as a repeatable demonstration and a regression check for substantial
 skill changes — **not** as an ongoing measurement programme. At three reps with an LLM
@@ -265,7 +266,7 @@ The prototype is ready to be argued with. It has one replicated effect, two hone
 control that holds, and a defect it found in itself. The benchmark's job is done; the open
 work is editorial and political, not infrastructural.
 
-- **Use the nulls as an editing knife.** The `voter` and `command` skills document what the
+- **Use the nulls as an editing knife.** The `make-voter` and `make-command` skills document what the
   strong models already do. Every skill costs description lines in context on every turn,
   so a flat benchmark result is a standing question: shorten the skill, or drop it. The
   core discussion should decide which skills earn their place, not only which are correct.
@@ -344,7 +345,7 @@ contradict each other. Worth watching whether it lands in the PR as written.
 
 - Does Javier's `symfony console` suggestion land in the recipes PR?
 - Does this become an official Symfony repository, and via which distribution channel?
-- Which of the flat-benchmark skills (`voter`, `command`) survive the editing knife?
+- Which of the flat-benchmark skills (`make-voter`, `make-command`) survive the editing knife?
 - Does the second maker series ([#1816](https://github.com/symfony/maker-bundle/pull/1816)
   through [#1820](https://github.com/symfony/maker-bundle/pull/1820)) get merged? Five
   wrapper skills wait on it.

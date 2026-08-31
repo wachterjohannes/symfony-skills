@@ -1,5 +1,5 @@
 ---
-name: listener
+name: make-listener
 description: Use when code should run in response to a framework or application event.
 version: 1.0.0
 updated: 2026-08-31

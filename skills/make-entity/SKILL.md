@@ -1,5 +1,5 @@
 ---
-name: entity
+name: make-entity
 description: Use when creating a Doctrine entity or adding fields and relations to one.
 version: 1.0.0
 updated: 2026-08-31

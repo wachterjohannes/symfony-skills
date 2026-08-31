@@ -1,5 +1,5 @@
 ---
-name: test
+name: make-test
 description: Use when writing a test, or choosing which base class a test should extend.
 version: 1.0.0
 updated: 2026-08-31

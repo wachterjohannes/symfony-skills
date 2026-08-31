@@ -1,5 +1,5 @@
 ---
-name: voter
+name: make-voter
 description: Use when access to an object depends on who is asking — ownership, state, or role combined with data.
 version: 1.0.0
 updated: 2026-08-28

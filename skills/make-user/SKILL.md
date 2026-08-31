@@ -1,5 +1,5 @@
 ---
-name: user
+name: make-user
 description: Use when a Symfony project needs a security user class — login, authentication, or stored accounts.
 version: 1.0.0
 updated: 2026-08-28

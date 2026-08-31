@@ -16,9 +16,9 @@ Symfony component that covers it, and each is something an agent tends to hand-r
 | Task | What it asks for | Skill under test |
 |---|---|---|
 | `00-control-value-object` | a `Money` type in plain PHP | **none — control** |
-| `01-lock` | a cron command that cannot overlap | `command` |
-| `02-json-endpoint` | a validated JSON endpoint | `controller` |
-| `03-post-authorization` | only the author may edit a post | `voter` |
+| `01-lock` | a cron command that cannot overlap | `make-command` |
+| `02-json-endpoint` | a validated JSON endpoint | `make-controller` |
+| `03-post-authorization` | only the author may edit a post | `make-voter` |
 
 ## Design rules
 

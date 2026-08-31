@@ -1,5 +1,5 @@
 ---
-name: command
+name: make-command
 description: Use when creating a console command in a Symfony project.
 version: 1.0.0
 updated: 2026-08-28

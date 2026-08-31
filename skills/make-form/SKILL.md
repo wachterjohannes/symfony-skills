@@ -1,5 +1,5 @@
 ---
-name: form
+name: make-form
 description: Use when building a server-rendered form in a Symfony project.
 version: 1.0.0
 updated: 2026-08-28

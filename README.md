@@ -33,17 +33,17 @@ carry no PHP templates, because rebuilding `make:*` as a prompt is worse than ru
 
 | Skill | Wraps |
 |---|---|
-| [`command`](skills/command/SKILL.md) | `make:command` |
-| [`crud`](skills/crud/SKILL.md) | `make:crud` |
-| [`entity`](skills/entity/SKILL.md) | `make:entity` |
-| [`listener`](skills/listener/SKILL.md) | `make:listener` |
-| [`test`](skills/test/SKILL.md) | `make:test` |
-| [`controller`](skills/controller/SKILL.md) | `make:controller` |
-| [`form`](skills/form/SKILL.md) | `make:form` |
-| [`user`](skills/user/SKILL.md) | `make:user` |
-| [`migration`](skills/migration/SKILL.md) | `make:migration` |
-| [`voter`](skills/voter/SKILL.md) | `make:voter` |
-| [`twig-extension`](skills/twig-extension/SKILL.md) | `make:twig-extension` |
+| [`make-command`](skills/make-command/SKILL.md) | `make:command` |
+| [`make-crud`](skills/make-crud/SKILL.md) | `make:crud` |
+| [`make-entity`](skills/make-entity/SKILL.md) | `make:entity` |
+| [`make-listener`](skills/make-listener/SKILL.md) | `make:listener` |
+| [`make-test`](skills/make-test/SKILL.md) | `make:test` |
+| [`make-controller`](skills/make-controller/SKILL.md) | `make:controller` |
+| [`make-form`](skills/make-form/SKILL.md) | `make:form` |
+| [`make-user`](skills/make-user/SKILL.md) | `make:user` |
+| [`make-migration`](skills/make-migration/SKILL.md) | `make:migration` |
+| [`make-voter`](skills/make-voter/SKILL.md) | `make:voter` |
+| [`make-twig-extension`](skills/make-twig-extension/SKILL.md) | `make:twig-extension` |
 
 ### Which makers get a wrapper
 

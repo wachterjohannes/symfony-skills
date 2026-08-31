@@ -1,5 +1,5 @@
 ---
-name: twig-extension
+name: make-twig-extension
 description: Use when a template needs a filter or function that Twig does not provide.
 version: 1.0.0
 updated: 2026-08-28

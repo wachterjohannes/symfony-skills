@@ -1,5 +1,5 @@
 ---
-name: crud
+name: make-crud
 description: Use when an entity needs the full set of list, show, create, edit and delete actions.
 version: 1.0.0
 updated: 2026-08-31

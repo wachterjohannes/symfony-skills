@@ -1,5 +1,5 @@
 ---
-name: migration
+name: make-migration
 description: Use when the database schema needs to change in a Symfony project using Doctrine.
 version: 1.0.0
 updated: 2026-08-28
