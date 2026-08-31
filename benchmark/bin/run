@@ -83,8 +83,14 @@ fi
 # supposed to differ by.
 workdir="${BENCHMARK_WORKDIR:-${TMPDIR:-/tmp}/symfony-skills-benchmark}"
 
-out="$here/results/$task/$variant"
-app="$workdir/$task/$variant/app"
+# Every configuration needs its own directory, or a second one silently overwrites the
+# first — the fourth run lost verdicts to exactly that. Derived from the model when one is
+# named, so the common case needs no extra thought.
+label="${BENCHMARK_LABEL:-$(printf '%s' "$AGENT_CMD" | sed -n 's/.*--model[ =]\([^ ]*\).*/\1/p' | tr '/:' '--')}"
+label="${label:-default}"
+
+out="$here/results/$task/$label/$variant"
+app="$workdir/$task/$label/$variant/app"
 
 # Evidence lives one level up, because $out is cleared on every invocation and a
 # repetition would otherwise erase the record of the one before it.
@@ -135,6 +141,13 @@ env -u CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD \
     ${agent_config:+CLAUDE_CONFIG_DIR="$agent_config"} \
     $AGENT_CMD < "$task_dir/TASK.md" > "$out/agent.log" 2>&1 || true
 
+# The fourth run lost a whole configuration to an env(1) that stopped parsing -u flags at
+# the first NAME=value assignment: isolation quietly did nothing and every diff came back
+# empty. Silence is the failure mode worth catching.
+if [ ! -s "$out/agent.log" ]; then
+    echo "warning: $task/$label/$variant produced no agent output at all — check isolation and the agent command" >&2
+fi
+
 git add -A
 
 # composer.lock was 89% of the raw diff in the first run and says nothing a
@@ -152,6 +165,7 @@ fi
 {
     echo "isolation: $isolation"
     echo "agent-kind: $AGENT_KIND"
+    echo "label: $label"
     echo "agent: $AGENT_CMD"
     echo "date: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
     echo "symfony-cli: $(symfony version --no-ansi 2>/dev/null | head -1)"

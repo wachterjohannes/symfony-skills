@@ -6,6 +6,10 @@ set -euo pipefail
 here="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 task="${1:?usage: bin/judge <task>}"
+# Same label bin/run used, so a judge call cannot read another configuration's diffs.
+label="${2:-${BENCHMARK_LABEL:-}}"
+[ -n "$label" ] || { echo "usage: bin/judge <task> <label>   (the label bin/run wrote, e.g. claude-haiku-4-5)" >&2; exit 1; }
+
 checklist="$here/tasks/$task/CHECKLIST.md"
 [ -f "$checklist" ] || { echo "error: no checklist for task '$task'" >&2; exit 1; }
 
@@ -13,7 +17,7 @@ JUDGE_CMD="${JUDGE_CMD:-claude -p}"
 
 judge_one() {
     local variant="$1"
-    local dir="$here/results/$task/$variant"
+    local dir="$here/results/$task/$label/$variant"
 
     [ -f "$dir/diff.patch" ] || { echo "error: no diff for $task/$variant — run bin/run first" >&2; exit 1; }
 
@@ -40,7 +44,8 @@ $(cat "$dir/diff.patch")
 PROMPT
 }
 
-printf '{"task": %s, "with_skills": %s, "without_skills": %s}\n' \
+printf '{"task": %s, "label": %s, "with_skills": %s, "without_skills": %s}\n' \
     "$(printf '%s' "$task" | jq -R .)" \
+    "$(printf '%s' "$label" | jq -R .)" \
     "$(judge_one with-skills | sed -n '/{/,$p')" \
     "$(judge_one without-skills | sed -n '/{/,$p')"
