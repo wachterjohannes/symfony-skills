@@ -1,8 +1,14 @@
 # Benchmark
 
-Do the skills change what an agent writes? This answers that with evidence instead of
-opinion: three tasks, each run twice on a fresh Symfony project — once with the skills
-installed, once without — and both diffs scored against a checklist.
+Do the skills change what an agent writes? This harness answers that with evidence instead
+of opinion: each task runs twice on a fresh Symfony project — once with the skills
+installed, once without — and both diffs are scored against a binary checklist.
+
+Be clear about what it is: **a repeatable demonstration, not a measurement instrument.**
+Three reps per cell and an LLM judge can only show large, categorical differences — the
+kind visible in the diffs anyway. That is enough for its purpose (anyone can re-run it and
+watch the difference appear), and nothing subtler should be claimed from it. The findings,
+and the history of how the tasks got their current shape, are in [RESULTS.md](RESULTS.md).
 
 The tasks are the original complaint from the core team channel, made concrete. Each has a
 Symfony component that covers it, and each is something an agent tends to hand-roll.
@@ -14,44 +20,27 @@ Symfony component that covers it, and each is something an agent tends to hand-r
 | `02-json-endpoint` | a validated JSON endpoint | `controller` |
 | `03-post-authorization` | only the author may edit a post | `voter` |
 
-Every task maps onto a skill that actually exists here, except the control, which must map
-onto none. Both halves of that were learned the hard way.
+## Design rules
 
-The first run's tasks were built around `symfony/lock` and Messenger, which **no skill here
-mentions**. They could not have measured anything, and reading their flat results as "the
-baseline is strong" was wrong — they were null tests.
+Each of these was learned by breaking it; the breakage is documented in
+[RESULTS.md](RESULTS.md).
 
-The second run's control then moved, 12/12 against 7/12, which by the rule below should have
-devalued the whole run. It did not, because that control was not one: its premise claimed a
-console command already existed, so solving it meant *creating* one — which `command` covers
-outright. A skill was doing its job on a task labelled as skill-free.
-
-### The control
-
-`00-control-value-object` is deliberately about nothing this repository teaches: an amount,
-a currency, immutability, an exception on mismatch. No maker, no configuration, no routing,
-no template, no console.
-
-`cli-conventions` is the one skill an agent might still consult, since it will run Composer
-and a test suite. How it invokes those does not appear in a diff, so it cannot move the
-checklist.
-
-If the control shows a difference, the benchmark is measuring the setup — sampling noise or
-the mere cost of carrying eleven extra documents in context — and every other result in the
-same run is worth less. Report that before any positive finding.
-
-None of that may appear in `tasks/00-control-value-object/CHECKLIST.md`. `bin/judge` puts the
-checklist into the judge's prompt verbatim, so a sentence there saying both variants should
-score the same is an instruction to the judge, not a note to the reader. It was there for one
-run; that run's flat control is weaker evidence than it looks, and the third run should be
-repeated before its control is cited.
-
-### Tasks must stand alone
-
-A task describes work on a fresh skeleton, so it may not claim anything already exists.
-`01-lock` did, and in one run the agent stopped to ask which of two readings applied — in a
-non-interactive run, that produces an empty diff. It has been rewritten to ask for the
-command outright, which breaks comparability with the first two runs on purpose.
+- **Every task maps onto a skill that exists here** — except the control, which must map
+  onto none. A task about a component no skill mentions measures nothing, and a "control"
+  that a skill covers devalues the whole run.
+- **The control is plain PHP on purpose**: an amount, a currency, immutability, an
+  exception on mismatch. No maker, no configuration, no routing, no template, no console.
+  If the control shows a difference, the benchmark is measuring the setup — report that
+  before any positive finding, and trust the run less.
+- **Tasks must stand alone.** A task describes work on a fresh skeleton, so it may not
+  claim anything already exists. An agent that spots a false premise may stop to ask — and
+  in a non-interactive run that produces an empty diff, not an answer.
+- **Checklists go to the judge verbatim.** `bin/judge` puts `CHECKLIST.md` into the
+  prompt, so a checklist may not contain notes to the reader ("both variants should score
+  the same here") — those become instructions to the judge.
+- **A checklist item must be failable.** An item that checks for installing a package the
+  skeleton already ships can never fail, and an item testing behaviour no skill teaches
+  measures the model, not the skills.
 
 ## Running it
 
@@ -95,24 +84,19 @@ Change one variable at a time. Swapping the agent and the model together produce
 difference nobody can attribute to either.
 
 Under `AGENT_KIND=opencode` the skills are installed the way `docs/opencode.md` describes —
-the folders under `.agents/skills` plus the index from `AGENTS.md` with its paths adjusted —
-so a run also exercises the copy-only install path this repository documents but has never
-otherwise tried. Isolation is an empty `XDG_CONFIG_HOME`, the equivalent of the pristine
+the folders under `.agents/skills` plus the index from `AGENTS.md` with its paths
+adjusted — so a run also exercises the copy-only install path this repository documents.
+Isolation is an empty `XDG_CONFIG_HOME`, the equivalent of the pristine
 `CLAUDE_CONFIG_DIR` used for Claude Code.
 
-Each configuration writes into `results/<task>/<label>/`, where the label is derived from the
-model name unless `BENCHMARK_LABEL` overrides it. Without that, a second configuration
-overwrites the first — the fourth run lost verdicts to exactly that.
+Each configuration writes into `results/<task>/<label>/`, where the label is derived from
+the model name unless `BENCHMARK_LABEL` overrides it — without a distinct label, a second
+configuration would overwrite the first. A run that produces no agent output at all prints
+a warning; empty diffs look like a result until someone checks, and silence is the failure
+mode worth catching.
 
-A run that produces no agent output at all prints a warning. The fourth run lost an entire
-configuration to an `env(1)` that stopped parsing `-u` flags at the first `NAME=value`
-assignment: isolation quietly did nothing, and empty diffs look like a result until someone
-checks. Silence is the failure mode worth catching.
-
-The model is pinned in the command and recorded in `evidence/`. The first three runs did not
-record theirs — they were Opus 5, which is the default here so that a plain `bin/run`
-continues that series rather than quietly starting a new one.
-
+The model is pinned in the command and recorded in `evidence/`. The default is Opus 5, so
+a plain `bin/run` continues the existing series rather than quietly starting a new one.
 `JUDGE_CMD` overrides the judge the same way.
 
 The default `AGENT_CMD` passes `--dangerously-skip-permissions`, because the agent has to
@@ -124,12 +108,8 @@ seconds earlier, and nothing else — read `bin/run` before you believe that.
 The agent runs under whatever Claude Code configuration it finds. Left alone that means
 both variants inherit the operator's `~/.claude/CLAUDE.md`, the globally installed skills,
 the plugins and any configured MCP servers — and then the baseline is not a baseline, it is
-that machine.
-
-On the machine this was written on, the global `CLAUDE.md` already carried a Symfony
-instruction (*"use `symfony composer <script>` commands"*), overlapping directly with the
-`cli-conventions` skill. A result measured that way understates the skills and is fair game
-for anyone who wants to dismiss it.
+that machine. (On the machine this was written on, the global `CLAUDE.md` already carried a
+Symfony instruction overlapping with the `cli-conventions` skill.)
 
 So `bin/run` refuses to start without an isolated configuration. Create a credential once:
 
@@ -149,15 +129,17 @@ Two further contaminations are removed rather than noted:
 
 - The project is built in a temporary directory outside this repository. Built inside it,
   the skills would sit in an ancestor directory and be readable in both variants.
-- `composer.lock` and `symfony.lock` are excluded from `diff.patch` — 89% of it in the
-  first run, and nothing a reviewer needs. What the agent installed stays visible in
+- `composer.lock` and `symfony.lock` are excluded from `diff.patch` — nearly all of the
+  raw diff, and nothing a reviewer needs. What the agent installed stays visible in
   `packages.patch`.
 
 ## Reading the result
 
 A checklist item that passes in both variants proves nothing about the skills; the model
 knew it anyway. The interesting rows are the ones that pass only with the skills installed,
-and the embarrassing ones are those that pass only without.
+and the embarrassing ones are those that pass only without. A flat result is a result too:
+it means the skill documents what the model already does — worth knowing when deciding
+whether that skill earns its context lines.
 
 Run each task more than once before concluding anything. A single run is an anecdote.
 
@@ -166,11 +148,11 @@ Run each task more than once before concluding anything. A single run is an anec
 The Symfony CLI, PHP, Composer, `jq`, and an agent on `PATH`. Each run creates a full
 Symfony project, so expect minutes and a network connection.
 
-Evidence is committed, artifacts are not. Every run drops a timestamped file into
-`results/<task>/evidence/` recording its isolation mode, agent and date; that directory
-survives the clearing `bin/run` does on each invocation, so a repetition cannot erase the
-record of the one before it. `diff.patch`, `agent.log` and the rest stay local. Projects are built under `$TMPDIR/symfony-skills-benchmark`;
-override with `BENCHMARK_WORKDIR`.
+Everything under `results/` stays local — diffs, logs, verdicts and the timestamped
+evidence files `bin/run` drops for each run. Conclusions belong in
+[RESULTS.md](RESULTS.md), with the raw files of past runs preserved in git history.
+Projects are built under `$TMPDIR/symfony-skills-benchmark`; override with
+`BENCHMARK_WORKDIR`.
 
 Agents tend to start the skeleton's `compose.yaml` for a database. `bin/run` shuts it down
 afterwards, but check `docker ps` if a run is interrupted.

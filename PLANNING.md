@@ -170,60 +170,41 @@ review cycles, and they have already drifted once — over `symfony console` ver
 changes rarely; letting the faster-moving side win would quietly turn the recipe into the
 stale copy.
 
-Detecting drift is a later stage, not version one: run the three benchmark tasks in three
+Detecting drift is a later stage, not version one: run the benchmark tasks in three
 configurations — `AGENTS.md` only, skills only, both. Diverging results are a contradiction,
 found with machinery that already exists for the success criterion.
 
 ## Success criterion
 
 Four tasks on a fresh `symfony new`, each run with and without the skills, diffs compared,
-three repetitions per cell. Judged by an LLM — output is not deterministic — against a
-**binary checklist**, not a scale. Everything mechanical is a script. The harness and the
-reasoning behind it are in [`benchmark/`](benchmark/README.md).
+three repetitions per cell, judged by an LLM against a **binary checklist**. The harness
+and its design rules are in [`benchmark/`](benchmark/README.md); the consolidated findings
+are in [`benchmark/RESULTS.md`](benchmark/RESULTS.md).
 
-Two rules were learned by breaking them, and both now hold:
+The criterion is met. One skill shows a clean, replicated, cross-model effect on a task it
+targets directly (`#[MapRequestPayload]` over `json_decode()`); two skills produced honest
+nulls — they document what the agent already does; the control held; and the benchmark
+found a defect in the skills themselves (a redundant `ValidationExceptionListener` the
+`controller` skill now warns against).
 
-- **Every task maps onto a skill that exists here**, except one that must map onto none. The
-  first run's tasks were built around `symfony/lock` and Messenger, which no skill mentions;
-  they measured nothing, and their flat results were misread as a strong baseline.
-- **The control must be genuinely skill-free.** The second run's control moved and by the
-  benchmark's own rule should have devalued everything else. It did not, because that task
-  claimed a console command already existed — so solving it meant creating one, which the
-  `command` skill covers. The control now asks for a value object in plain PHP.
-
-### What three runs found
-
-| | Result |
-|---|---|
-| `#[MapRequestPayload]` over `json_decode()` | **3/3 with skills, 0/3 without — three times, no exception** |
-| Authorization in a voter | flat in both arms, twice |
-| A cron command that cannot overlap | flat in both arms |
-| The control | flat, on the run where it was finally a control |
-
-One skill shows a clean, replicated effect on a task it targets directly. Two skills document
-what the agent already does correctly. That is the honest shape of it, and the nulls are as
-much a result as the difference — a benchmark that favoured the skills everywhere would be
-measuring its own wishful thinking.
-
-The runs also found something against the skills: with the skills installed the agent kept
-adding a `ValidationExceptionListener` that `#[MapRequestPayload]` makes redundant. The
-`controller` skill now says the attribute already answers 422. Finding that ourselves is
-worth more than a third claimed success.
+The harness stays as a repeatable demonstration and a regression check for substantial
+skill changes — **not** as an ongoing measurement programme. At three reps with an LLM
+judge it can only show categorical differences, half the skills act on how the agent works
+rather than on what lands in a diff, and the with/without question it was built to answer
+is answered.
 
 ## Content and updates
 
-The canonical source is <https://symfony.com/doc/current/best_practices.html>. Which areas
-feed the skills is configurable.
+The canonical source is <https://symfony.com/doc/current/best_practices.html>, plus the
+per-topic documentation pages each skill draws on.
 
-The update path splits along the same line as everything else:
-
-- **Script:** [`tools/update-skills/bin/fetch`](tools/update-skills/) downloads the
-  configured sources, `bin/diff` prints the hunks that moved, grouped by affected skill.
-- **Prompt:** `tools/update-skills/SKILL.md` judges whether a documentation change means a
-  skill is now wrong.
-
-That keeps the update mechanism subject to the repository's own writing rules instead of
-exempting it.
+The update path, when one is needed, splits along the same line as everything else: a
+mechanical half (snapshot the source pages, diff them, group the hunks by affected skill)
+and a judgement half (decide whether a documentation change means a skill is now wrong —
+a prompt, not a script). A first version of that tooling was built and then removed as
+premature — the skills are new and the documentation has not moved under them yet; it
+lives in git history under `tools/update-skills/` if the need returns before Symfony Mate
+covers it.
 
 There is **no update mechanism for copies already in someone's project**, and the plan does
 not pretend otherwise. Someone who copied and adapted has no common ancestor to merge from.
@@ -271,15 +252,16 @@ We address this head-on:
 ## Outlook (for the core discussion)
 
 The prototype is ready to be argued with. It has one replicated effect, two honest nulls, a
-control that holds, and a defect it found in itself. What it does not have is breadth: eleven
-skills exist and three have been measured.
+control that holds, and a defect it found in itself. The benchmark's job is done; the open
+work is editorial and political, not infrastructural.
 
-- **Widen the benchmark.** `configuration`, `templates` and `discover` are untested, and
-  each makes a checkable claim.
+- **Use the nulls as an editing knife.** The `voter` and `command` skills document what the
+  strong models already do. Every skill costs description lines in context on every turn,
+  so a flat benchmark result is a standing question: shorten the skill, or drop it. The
+  core discussion should decide which skills earn their place, not only which are correct.
 - **Symfony Mate as the distribution channel.** Mate can override, enable and disable skills
   and keeps a lockfile, which is where a real update path belongs. Installing the `AGENTS.md`
   would fit there too.
-- **Entity and Crud skills**, once the two maker options land.
 - **Distribution** as a Composer package, a Claude Code plugin, or a Mate extension — open.
 
 ## Reference: `AGENTS.md` in the recipes PR
@@ -344,10 +326,13 @@ contradict each other. Worth watching whether it lands in the PR as written.
 
 ## Open questions
 
-- Does [maker-bundle#1810](https://github.com/symfony/maker-bundle/pull/1810) get accepted? The Entity skill depends on it.
-- Does `make:crud` get a `--controller-class` option? The Crud skill depends on it.
 - Does Javier's `symfony console` suggestion land in the recipes PR?
 - Does this become an official Symfony repository, and via which distribution channel?
+- Which of the flat-benchmark skills (`voter`, `command`) survive the editing knife?
+
+(The maker-bundle questions — `--field`/`--relation` for `make:entity`,
+`--controller-class` for `make:crud` — are answered: the PRs are merged, see
+[Blocking workstreams](#blocking-workstreams), and the skills exist.)
 
 ## Sources
 

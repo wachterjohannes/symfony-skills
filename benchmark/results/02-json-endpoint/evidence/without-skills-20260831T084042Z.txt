@@ -1,5 +1,0 @@
-isolation: clean
-agent-kind: opencode
-agent: opencode run --model ollama-cloud/deepseek-v4-flash:0731
-date: 2026-08-31T08:40:42Z
-symfony-cli: Symfony CLI version 5.17.1 (c) 2021-2026 Fabien Potencier (2026-04-07T07:06:38Z - stable)

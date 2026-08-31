@@ -6,11 +6,6 @@
 # Interview transcripts and research notes stay local
 /docs/sources/
 
-# Per-run artifacts stay local (large, and their conclusions belong in RESULTS*.md).
-# results/<task>/evidence/ holds one timestamped environment file per run and survives
-# the clearing that happens on every invocation — that plus verdict-*.json is the
-# evidence a benchmark PR carries, and neither is excluded here.
-/benchmark/results/*/*/setup.log
-/benchmark/results/*/*/agent.log
-/benchmark/results/*/*/diff.patch
-/benchmark/results/*/*/packages.patch
+# Per-run artifacts stay local; conclusions belong in benchmark/RESULTS.md, and the raw
+# files of past runs are preserved in git history.
+/benchmark/results/

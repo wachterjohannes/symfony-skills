@@ -24,9 +24,9 @@ esac
 # isolation is arranged — the two things that differ per agent.
 AGENT_KIND="${AGENT_KIND:-claude}"
 
-# The model is pinned rather than left to whatever the host defaults to. The first three
-# runs did not record theirs; they were Opus 5, which is why that is the default here — a
-# run without an override continues the existing series rather than starting a new one.
+# The model is pinned rather than left to whatever the host defaults to. Opus 5 is the
+# default so a run without an override continues the existing series rather than quietly
+# starting a new one.
 case "$AGENT_KIND" in
     claude)
         AGENT_CMD="${AGENT_CMD:-claude -p --dangerously-skip-permissions --strict-mcp-config --model claude-opus-5}"
@@ -84,8 +84,8 @@ fi
 workdir="${BENCHMARK_WORKDIR:-${TMPDIR:-/tmp}/symfony-skills-benchmark}"
 
 # Every configuration needs its own directory, or a second one silently overwrites the
-# first — the fourth run lost verdicts to exactly that. Derived from the model when one is
-# named, so the common case needs no extra thought.
+# first. Derived from the model when one is named, so the common case needs no extra
+# thought.
 label="${BENCHMARK_LABEL:-$(printf '%s' "$AGENT_CMD" | sed -n 's/.*--model[ =]\([^ ]*\).*/\1/p' | tr '/:' '--')}"
 label="${label:-default}"
 
@@ -141,19 +141,17 @@ env -u CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD \
     ${agent_config:+CLAUDE_CONFIG_DIR="$agent_config"} \
     $AGENT_CMD < "$task_dir/TASK.md" > "$out/agent.log" 2>&1 || true
 
-# The fourth run lost a whole configuration to an env(1) that stopped parsing -u flags at
-# the first NAME=value assignment: isolation quietly did nothing and every diff came back
-# empty. Silence is the failure mode worth catching.
+# An isolation step that fails does so silently — the run produces empty diffs, not an
+# error — so the absence of output is the signal worth catching.
 if [ ! -s "$out/agent.log" ]; then
     echo "warning: $task/$label/$variant produced no agent output at all — check isolation and the agent command" >&2
 fi
 
 git add -A
 
-# composer.lock was 89% of the raw diff in the first run and says nothing a
-# reviewer needs. symfony.lock stays: it is small, and its recipe entries are
-# the evidence that a component was installed properly rather than wired by
-# hand — excluding it made that checklist item unjudgeable in the first run.
+# composer.lock is nearly all of the raw diff and says nothing a reviewer
+# needs. symfony.lock stays: it is small, and its recipe entries are the
+# evidence that a component was installed properly rather than wired by hand.
 git diff --cached -- . ':(exclude)composer.lock' > "$out/diff.patch"
 git diff --cached -- composer.json > "$out/packages.patch"
 
