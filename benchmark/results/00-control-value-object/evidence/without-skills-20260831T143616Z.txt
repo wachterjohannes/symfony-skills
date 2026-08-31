@@ -1,0 +1,5 @@
+isolation: clean
+agent-kind: opencode
+agent: opencode run --model ollama-cloud/kimi-k2.7-code
+date: 2026-08-31T14:36:16Z
+symfony-cli: Symfony CLI version 5.17.1 (c) 2021-2026 Fabien Potencier (2026-04-07T07:06:38Z - stable)

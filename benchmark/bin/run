@@ -120,15 +120,18 @@ if [ "$variant" = "with-skills" ]; then
 fi
 
 # Session plumbing from a surrounding Claude Code session would otherwise make
-# this run a child of it.
-env ${agent_config:+XDG_CONFIG_HOME="$agent_config"} \
-    -u CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD \
+# this run a child of it. The -u flags must precede any NAME=value assignment:
+# GNU env accepts either order, but uutils' env (the Rust reimplementation,
+# increasingly the /usr/bin/env a distro ships) stops parsing options at the
+# first assignment and then treats the next `-u` as the command to execute.
+env -u CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD \
     -u CLAUDE_CODE_BRIDGE_SESSION_ID \
     -u CLAUDE_CODE_CHILD_SESSION \
     -u CLAUDE_CODE_ENTRYPOINT \
     -u CLAUDE_CODE_MESSAGING_SOCKET \
     -u CLAUDE_CODE_MESSAGING_TOKEN \
     -u CLAUDE_CODE_SESSION_ID \
+    ${agent_config:+XDG_CONFIG_HOME="$agent_config"} \
     ${agent_config:+CLAUDE_CONFIG_DIR="$agent_config"} \
     $AGENT_CMD < "$task_dir/TASK.md" > "$out/agent.log" 2>&1 || true
 

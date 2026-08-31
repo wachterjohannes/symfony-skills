@@ -1,0 +1,5 @@
+isolation: clean
+agent-kind: claude
+agent: claude -p --dangerously-skip-permissions --strict-mcp-config --model claude-haiku-4-5
+date: 2026-08-29T20:46:57Z
+symfony-cli: Symfony CLI version 5.17.1 (c) 2021-2026 Fabien Potencier (2026-04-07T07:06:38Z - stable)
