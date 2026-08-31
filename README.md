@@ -57,9 +57,16 @@ supplied, which is why `make:form` and `make:user` were wrongly excluded for a w
 [#1814](https://github.com/symfony/maker-bundle/pull/1814) added `--controller-class` and
 fixed the crash that made `make:crud` unusable under `--no-interaction`.
 
-Still blocked, and still without a skill here: `make:schedule`, `make:auth`,
-`make:reset-password` and `make:registration-form`. Each needs a value that has no way in from
-the command line, and three of the four crash rather than fall back.
+A second PR series is open for most of what remained:
+[#1816](https://github.com/symfony/maker-bundle/pull/1816) (`make:security:custom`),
+[#1817](https://github.com/symfony/maker-bundle/pull/1817) (`make:webhook`),
+[#1818](https://github.com/symfony/maker-bundle/pull/1818) (`make:security:form-login`),
+[#1819](https://github.com/symfony/maker-bundle/pull/1819) (`make:reset-password`) and
+[#1820](https://github.com/symfony/maker-bundle/pull/1820) (`make:registration-form`) each
+fix the crash under `--no-interaction` by moving the asked values into options. `make:auth`
+is deprecated in favour of the `make:security:*` commands, so its share of the work lives
+there. Skills for these makers follow once the PRs are merged — until then, still blocked
+and still without a skill here, alongside `make:schedule`, which has no PR yet.
 
 ## Installing
 

@@ -83,16 +83,26 @@ Six pull requests against `symfony/maker-bundle` are merged,
 made it unusable non-interactively, `--with-tests` to `make:controller`, and fixed the failing
 tests on `1.x` on the way past.
 
-Four makers still cannot run without a human, and three of them crash rather than fall back.
-That framing is what carried the merged series: a command that accepts `--no-interaction` and
-then dies is broken, not merely inconvenient.
+A second series is open under the same framing — a command that accepts `--no-interaction`
+and then dies is broken, not merely inconvenient. Each PR moves the asked values into
+options; `interact()` asks only for what was not passed, so the interactive dialogue is
+unchanged. All five target `1.x`; #1819 builds on #1818, #1820 on both.
+
+| PR | Maker | Notes |
+|---|---|---|
+| [#1816](https://github.com/symfony/maker-bundle/pull/1816) | `make:security:custom` | |
+| [#1817](https://github.com/symfony/maker-bundle/pull/1817) | `make:webhook` | |
+| [#1818](https://github.com/symfony/maker-bundle/pull/1818) | `make:security:form-login` | extracts the silent halves of the security guesses the two below also need |
+| [#1819](https://github.com/symfony/maker-bundle/pull/1819) | `make:reset-password` | seven options for seven asked values |
+| [#1820](https://github.com/symfony/maker-bundle/pull/1820) | `make:registration-form` | thirteen options; the largest and last of the series |
+
+`make:auth` needs no PR: it is deprecated in favour of the `make:security:*` commands, so
+fixing it would have been effort spent on a dead entry point — #1816 and #1818 are where
+that work went. That leaves one maker with no path yet:
 
 | Maker | What is missing |
 |---|---|
 | `make:schedule` | three questions, no arguments at all; `$scheduleName` is read uninitialised |
-| `make:auth` | all ten arguments are added inside `interact()`, so the definition is empty without it |
-| `make:reset-password` | three asked values, plus three class guesses that live in `interact()` |
-| `make:registration-form` | eight questions, eight uninitialised properties |
 
 `make:docker-database` is deliberately left alone — infrastructure rather than a code pattern,
 so no skill would wrap it either way.
@@ -259,6 +269,12 @@ work is editorial and political, not infrastructural.
   strong models already do. Every skill costs description lines in context on every turn,
   so a flat benchmark result is a standing question: shorten the skill, or drop it. The
   core discussion should decide which skills earn their place, not only which are correct.
+- **Security and webhook wrappers, once the second maker series lands.**
+  [#1816](https://github.com/symfony/maker-bundle/pull/1816) through
+  [#1820](https://github.com/symfony/maker-bundle/pull/1820) unblock `make:security:custom`,
+  `make:webhook`, `make:security:form-login`, `make:reset-password` and
+  `make:registration-form` — five candidates for wrapper skills, by the same rule as the
+  existing ones.
 - **Symfony Mate as the distribution channel.** Mate can override, enable and disable skills
   and keeps a lockfile, which is where a real update path belongs. Installing the `AGENTS.md`
   would fit there too.
@@ -329,6 +345,9 @@ contradict each other. Worth watching whether it lands in the PR as written.
 - Does Javier's `symfony console` suggestion land in the recipes PR?
 - Does this become an official Symfony repository, and via which distribution channel?
 - Which of the flat-benchmark skills (`voter`, `command`) survive the editing knife?
+- Does the second maker series ([#1816](https://github.com/symfony/maker-bundle/pull/1816)
+  through [#1820](https://github.com/symfony/maker-bundle/pull/1820)) get merged? Five
+  wrapper skills wait on it.
 
 (The maker-bundle questions — `--field`/`--relation` for `make:entity`,
 `--controller-class` for `make:crud` — are answered: the PRs are merged, see
