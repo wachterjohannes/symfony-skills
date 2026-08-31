@@ -58,8 +58,11 @@ command outright, which breaks comparability with the first two runs on purpose.
 ```bash
 bin/run 02-json-endpoint without-skills
 bin/run 02-json-endpoint with-skills
-bin/judge 02-json-endpoint
+bin/judge 02-json-endpoint claude-opus-5
 ```
+
+The second argument to `bin/judge` is the label `bin/run` wrote, so a judge call reads the
+diffs it is meant to.
 
 `bin/run` creates the project, installs the skills for the `with-skills` variant, hands the
 task to the agent, and saves the diff under `results/`. It decides nothing.
@@ -96,6 +99,15 @@ the folders under `.agents/skills` plus the index from `AGENTS.md` with its path
 so a run also exercises the copy-only install path this repository documents but has never
 otherwise tried. Isolation is an empty `XDG_CONFIG_HOME`, the equivalent of the pristine
 `CLAUDE_CONFIG_DIR` used for Claude Code.
+
+Each configuration writes into `results/<task>/<label>/`, where the label is derived from the
+model name unless `BENCHMARK_LABEL` overrides it. Without that, a second configuration
+overwrites the first — the fourth run lost verdicts to exactly that.
+
+A run that produces no agent output at all prints a warning. The fourth run lost an entire
+configuration to an `env(1)` that stopped parsing `-u` flags at the first `NAME=value`
+assignment: isolation quietly did nothing, and empty diffs look like a result until someone
+checks. Silence is the failure mode worth catching.
 
 The model is pinned in the command and recorded in `evidence/`. The first three runs did not
 record theirs — they were Opus 5, which is the default here so that a plain `bin/run`
