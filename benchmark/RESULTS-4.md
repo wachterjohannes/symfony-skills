@@ -158,3 +158,49 @@ per `docs/opencode.md`, not `.claude/skills/`).
   directions at Haiku and Kimi, not a reliable rescue. This is not yet a settled finding
   (single 3-rep samples per configuration); it is the specific place a follow-up run
   should concentrate reps if the goal is "which models need this."
+
+## Verification of this report
+
+All 120 `evidence/` files read `isolation: clean`, and the five model strings appear 24 times
+each — the ladder is complete and every rung is accounted for.
+
+The exception to the headline claim was read back from the raw verdicts rather than the
+table. `verdict-opus-2.json` records `without_skills` passing the `#[MapRequestPayload]` item
+with the quote `public function __invoke(#[MapRequestPayload] SubscribeRequest $payload)`.
+`verdict-opus-1.json` and `verdict-opus-3.json` show `$request->toArray()` and `json_decode()`
+respectively. The report is right to retire the "zero exceptions ever" framing, and right not
+to soften what remains.
+
+### The `env` bug was introduced here, not by the operator
+
+Worth recording plainly, because it cost a full Haiku configuration. PR #7 added the
+`XDG_CONFIG_HOME` assignment **before** the `-u` flags:
+
+```
+env ${agent_config:+XDG_CONFIG_HOME="$agent_config"} \
+    -u CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD \
+    ...
+```
+
+GNU `env` tolerates that. uutils `env` stops parsing options at the first `NAME=value`, so
+every `-u` after it was passed to the agent as an argument instead of unsetting anything. The
+failure was silent in the sense that mattered: it produced empty diffs rather than an error.
+
+The fix moves the assignments after the flags, which is correct for both implementations. The
+lesson for the harness is narrower than "watch out for uutils": an isolation step that fails
+should fail loudly, and this one did not.
+
+### The second bug is a design fault, not operator error
+
+Every configuration writes into the same `results/<task>/<variant>/`, so a cleanup between
+configurations deleted verdicts that had already been written. The operator recovered them
+with a dedicated re-run. The directory should carry the configuration, the way `evidence/`
+already carries the model — handled separately from this record.
+
+### On the Haiku threshold
+
+The report's central claim is that skills begin to matter at the Haiku tier, and it labels
+that "not yet settled". That labelling is right, and the reason is worth stating: at Haiku the
+control itself drops to 10/12 in **both** arms. The tier where a skill effect appears is also
+the tier where the instrument starts to lose resolution, and those two are hard to separate at
+n=3. Concentrating reps there, as the report suggests, is the way to tell them apart.
