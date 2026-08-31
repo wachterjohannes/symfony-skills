@@ -10,6 +10,10 @@ covering one topic. Read a skill when its trigger applies; don't read them all u
 | `templates` | writing Twig, naming templates, adding CSS or JavaScript | `skills/templates/SKILL.md` |
 | `discover` | about to rely on memory for a Symfony API, route or service | `skills/discover/SKILL.md` |
 | `command` | creating a console command | `skills/command/SKILL.md` |
+| `crud` | an entity needs list, show, create, edit and delete | `skills/crud/SKILL.md` |
+| `entity` | creating a Doctrine entity, or adding fields to one | `skills/entity/SKILL.md` |
+| `listener` | code should run on a framework or application event | `skills/listener/SKILL.md` |
+| `test` | writing a test, or choosing its base class | `skills/test/SKILL.md` |
 | `controller` | creating a controller or an HTTP endpoint | `skills/controller/SKILL.md` |
 | `form` | building a server-rendered form | `skills/form/SKILL.md` |
 | `user` | the project needs a security user class | `skills/user/SKILL.md` |
