@@ -65,41 +65,37 @@ Four background skills:
 | `templates`       | Twig naming, fragments, AssetMapper                                   |
 | `discover`        | Look it up in the project instead of recalling it (see below)         |
 
-Plus maker wrappers for `command`, `controller`, `form`, `migration`, `twig-extension`,
-`user` and `voter`.
+Plus maker wrappers for `command`, `controller`, `crud`, `entity`, `form`, `listener`,
+`migration`, `test`, `twig-extension`, `user` and `voter`.
 
-**Entity and Crud are left out entirely** — not as templates, not at all. Their makers need
-a value that cannot be passed in, and a hand-written template would be the very thing this
-repository argues against. They come back once the blocking workstream below lands, and they
-drop into the existing structure unchanged.
-
-Form and User were originally in this list and should not have been. Their questions only
-fill arguments and options that can be supplied, so `make:form ProductType Product` and
-`make:user User --is-entity --identity-property-name=email --with-password` run without
-prompting. Both now have wrappers.
+Entity and Crud were excluded while their makers needed a value that could not be passed in.
+Both landed. `make:test` and `make:listener` were never blocked at all — they take everything
+as arguments, and `make:listener` decides between a listener and a subscriber from the
+class-name suffix. They were simply never checked, which is the same mistake that kept Form
+and User out for a while.
 
 ## Blocking workstreams
 
-`MakeEntity` has no non-interactive path at all. Its `while (true)` loop asks for one
-property per iteration, and the command exposes only `name`, `--api-resource`,
-`--broadcast`, `--regenerate` and `--overwrite`. There is no open issue requesting field
-arguments.
+Six pull requests against `symfony/maker-bundle` are merged,
+[#1810](https://github.com/symfony/maker-bundle/pull/1810) through
+[#1815](https://github.com/symfony/maker-bundle/pull/1815). They added `--field` and
+`--relation` to `make:entity`, `--controller-class` to `make:crud` along with the crash that
+made it unusable non-interactively, `--with-tests` to `make:controller`, and fixed the failing
+tests on `1.x` on the way past.
 
-A `--field=name:string:255` option would be equivalent to the interactive loop: each
-iteration adds exactly one field, and `make:entity` on an existing entity appends. An agent
-would call the command once per field and get the same result.
+Four makers still cannot run without a human, and three of them crash rather than fall back.
+That framing is what carried the merged series: a command that accepts `--no-interaction` and
+then dies is broken, not merely inconvenient.
 
-Opened as [symfony/maker-bundle#1810](https://github.com/symfony/maker-bundle/pull/1810),
-scoped to plain fields — relations and enums keep their follow-up questions and stay
-interactive. It blocks the Entity skill and nothing else.
+| Maker | What is missing |
+|---|---|
+| `make:schedule` | three questions, no arguments at all; `$scheduleName` is read uninitialised |
+| `make:auth` | all ten arguments are added inside `interact()`, so the definition is empty without it |
+| `make:reset-password` | three asked values, plus three class guesses that live in `interact()` |
+| `make:registration-form` | eight questions, eight uninitialised properties |
 
-### `--controller-class` for `make:crud`
-
-`MakeCrud` asks for the controller class name and assigns it to a typed property with no
-argument and no option behind it. Under `--no-interaction` the maker's `interact()` never
-runs, the property is never initialised, and generation fails on first access. A single
-option with a sensible default fixes it. Not yet opened; it blocks the Crud skill and
-nothing else.
+`make:docker-database` is deliberately left alone — infrastructure rather than a code pattern,
+so no skill would wrap it either way.
 
 ## Structure
 
