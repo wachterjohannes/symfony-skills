@@ -4,11 +4,14 @@ Do the skills change what an agent writes? This harness answers that with eviden
 of opinion: each task runs twice on a fresh Symfony project — once with the skills
 installed, once without — and both diffs are scored against a binary checklist.
 
-Be clear about what it is: **a repeatable demonstration, not a measurement instrument.**
-Three reps per cell and an LLM judge can only show large, categorical differences — the
-kind visible in the diffs anyway. That is enough for its purpose (anyone can re-run it and
-watch the difference appear), and nothing subtler should be claimed from it. The findings,
-and the history of how the tasks got their current shape, are in [RESULTS.md](RESULTS.md).
+Be clear about what it is: **a concluded experiment, kept as a repeatable demonstration.**
+The question it was built for is answered; the findings, and the history of how the tasks
+got their current shape, are in [RESULTS.md](RESULTS.md). Nothing further is measured
+here. The harness stays for two reasons: the headline claim should survive a skeptic
+re-running it, and a substantial skill change deserves a regression check. Its limits are
+part of the record: three reps per cell and an LLM judge only show large, categorical
+differences (the kind visible in the diffs anyway), and nothing subtler should be claimed
+from it.
 
 The tasks are the original complaint from the core team channel, made concrete. Each has a
 Symfony component that covers it, and each is something an agent tends to hand-roll.
