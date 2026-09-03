@@ -210,19 +210,33 @@ is answered.
 The canonical source is <https://symfony.com/doc/current/best_practices.html>, plus the
 per-topic documentation pages each skill draws on.
 
-The update path, when one is needed, splits along the same line as everything else: a
-mechanical half (snapshot the source pages, diff them, group the hunks by affected skill)
-and a judgement half (decide whether a documentation change means a skill is now wrong —
-a prompt, not a script). A first version of that tooling was built and then removed as
-premature — the skills are new and the documentation has not moved under them yet; it
-lives in git history under `tools/update-skills/` if the need returns before Symfony Mate
-covers it.
+The update path splits along the same line as everything else. The mechanical half is
+script: [`tools/update-skills`](tools/update-skills/) keeps a committed snapshot of every
+source page, `bin/diff` prints the hunks that moved since, grouped by the skills each page
+feeds, and a monthly GitHub Action
+([`docs-drift.yml`](.github/workflows/docs-drift.yml)) runs that diff and files the output
+as an issue. The judgement half is a prompt: `tools/update-skills/SKILL.md` decides
+whether a hunk means a skill is now wrong, and the most common outcome is that it does
+not. Nothing in the chain updates a skill on its own.
+
+This tooling was removed once as premature and came back for a different audience. As
+maintenance it is still ahead of any need; as an answer it is not. "Who keeps this
+current?" is the first question an official repository gets asked, and "a monthly diff
+against the pages each skill cites, judged by the repository's own rules" is an answer
+that can be shown running rather than promised.
 
 There is **no update mechanism for copies already in someone's project**, and the plan does
 not pretend otherwise. Someone who copied and adapted has no common ancestor to merge from.
 Version and date in the frontmatter plus a readable changelog in the update PR is what we
-offer. A real update path — override, enable/disable, a lockfile — is what Symfony Mate
-brings, and that is where it belongs.
+offer.
+
+If that direction is ever wanted, the ecosystem already demonstrates the design: Flex's
+`composer recipes:update` records which recipe version a project installed, builds the
+patch between that version and the current one, and applies it three-way to the possibly
+edited local files, marking conflicts instead of overwriting. A skills equivalent needs
+the same two ingredients, a lockfile with the installed source hash per skill and a
+three-way patch on update. That is precisely what Symfony Mate brings — override,
+enable/disable, a lockfile — and where this belongs, not here.
 
 ## Writing rules for skills
 

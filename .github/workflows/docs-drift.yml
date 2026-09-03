@@ -1,0 +1,54 @@
+# Watches the documentation pages the skills draw on. When a page moved since the
+# committed snapshot, this opens (or updates) an issue carrying the changed hunks,
+# grouped by affected skill. It never decides whether a change matters; that judgement
+# is tools/update-skills/SKILL.md, run by a person or an agent against the issue body.
+name: docs-drift
+
+on:
+  schedule:
+    - cron: "0 6 1 * *"
+  workflow_dispatch:
+
+jobs:
+  diff:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Diff the documentation against the snapshot
+        id: drift
+        run: |
+          tools/update-skills/bin/diff > drift.md
+          if grep -q '^No documentation changes' drift.md; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Open or update the drift issue
+        if: steps.drift.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh label create docs-drift --description "Documentation moved under a skill" \
+            --color D93F0B --repo "$GITHUB_REPOSITORY" 2>/dev/null || true
+
+          {
+            echo "The Symfony documentation moved since the committed snapshot."
+            echo "Judge each hunk with \`tools/update-skills/SKILL.md\`: most changes"
+            echo "are irrelevant, and an unchanged skill is a valid outcome."
+            echo
+            cat drift.md
+          } > issue.md
+
+          existing="$(gh issue list --label docs-drift --state open \
+            --json number --jq '.[0].number' --repo "$GITHUB_REPOSITORY")"
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --body-file issue.md --repo "$GITHUB_REPOSITORY"
+          else
+            gh issue create --title "Documentation drift since the snapshot" \
+              --label docs-drift --body-file issue.md --repo "$GITHUB_REPOSITORY"
+          fi

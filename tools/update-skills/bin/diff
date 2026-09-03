@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+# Compare the committed snapshot against a freshly fetched one and write the
+# changed hunks to stdout, grouped by the skills each source feeds.
+# Mechanical only: it reports what moved, never whether it matters.
+set -euo pipefail
+
+here="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+config="$here/sources.json"
+old="$here/snapshot"
+new="$(mktemp -d)"
+trap 'rm -rf "$new"' EXIT
+
+if [ ! -d "$old" ]; then
+    echo "error: no snapshot at $old — run 'bin/fetch' once and commit it" >&2
+    exit 1
+fi
+
+"$here/bin/fetch" "$new" >/dev/null
+
+changed=0
+while read -r path skills; do
+    if diff -q "$old/$path" "$new/$path" >/dev/null 2>&1; then
+        continue
+    fi
+
+    changed=1
+    echo "## $path"
+    echo "affects: $skills"
+    echo
+    echo '```diff'
+    diff -u "$old/$path" "$new/$path" | tail -n +3 || true
+    echo '```'
+    echo
+done < <(jq -r '.sources[] | "\(.path) \(.skills | join(", "))"' "$config")
+
+if [ "$changed" = "0" ]; then
+    echo "No documentation changes since the snapshot."
+    exit 0
+fi
+
+echo "Refresh the snapshot with: bin/fetch"

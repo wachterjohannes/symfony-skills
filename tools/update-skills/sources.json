@@ -1,0 +1,29 @@
+{
+  "ref": "7.4",
+  "base": "https://raw.githubusercontent.com/symfony/symfony-docs",
+  "sources": [
+    { "path": "best_practices.rst",        "skills": ["configuration", "templates", "make-controller", "discover", "components"] },
+    { "path": "configuration.rst",         "skills": ["configuration"] },
+    { "path": "templates.rst",             "skills": ["templates", "make-twig-extension"] },
+    { "path": "frontend/asset_mapper.rst", "skills": ["templates"] },
+    { "path": "setup.rst",                 "skills": ["cli-conventions"] },
+    { "path": "console.rst",               "skills": ["make-command"] },
+    { "path": "controller.rst",            "skills": ["make-controller"] },
+    { "path": "doctrine.rst",              "skills": ["make-entity", "make-crud", "make-migration"] },
+    { "path": "security.rst",              "skills": ["make-user"] },
+    { "path": "security/voters.rst",       "skills": ["make-voter"] },
+    { "path": "forms.rst",                 "skills": ["make-form"] },
+    { "path": "testing.rst",               "skills": ["make-test"] },
+    { "path": "event_dispatcher.rst",      "skills": ["make-listener"] },
+    { "path": "lock.rst",                  "skills": ["components", "make-command"] },
+    { "path": "messenger.rst",             "skills": ["components"] },
+    { "path": "scheduler.rst",             "skills": ["components"] },
+    { "path": "http_client.rst",           "skills": ["components"] },
+    { "path": "cache.rst",                 "skills": ["components"] },
+    { "path": "mailer.rst",                "skills": ["components"] },
+    { "path": "rate_limiter.rst",          "skills": ["components"] },
+    { "path": "workflow.rst",              "skills": ["components"] },
+    { "path": "components/uid.rst",        "skills": ["components"] },
+    { "path": "components/clock.rst",      "skills": ["components"] }
+  ]
+}

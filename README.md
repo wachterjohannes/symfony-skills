@@ -82,7 +82,10 @@ Copy the folders. There is no install script.
 | OpenCode | [docs/opencode.md](docs/opencode.md) |
 
 Copy it in, adapt it when you need to. These are not a dependency, and there is no update
-mechanism that reaches into your project — a skill you edited is yours.
+mechanism that reaches into your project — a skill you edited is yours. The repository
+itself stays current the other way round: [`tools/update-skills`](tools/update-skills/)
+watches the documentation pages each skill draws on, and a monthly workflow files any
+drift as an issue.
 
 ## Relation to the framework-bundle `AGENTS.md`
 
