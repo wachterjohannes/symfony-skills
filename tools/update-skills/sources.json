@@ -2,7 +2,10 @@
   "ref": "7.4",
   "base": "https://raw.githubusercontent.com/symfony/symfony-docs",
   "sources": [
-    { "path": "best_practices.rst",        "skills": ["configuration", "templates", "make-controller", "discover", "components"] },
+    { "path": "best_practices.rst",        "skills": ["configuration", "templates", "make-controller", "discover", "components", "services"] },
+    { "path": "service_container.rst",     "skills": ["services"] },
+    { "path": "service_container/autowiring.rst", "skills": ["services"] },
+    { "path": "service_container/tags.rst", "skills": ["services"] },
     { "path": "configuration.rst",         "skills": ["configuration"] },
     { "path": "templates.rst",             "skills": ["templates", "make-twig-extension"] },
     { "path": "frontend/asset_mapper.rst", "skills": ["templates"] },

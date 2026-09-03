@@ -56,7 +56,7 @@ if and only if it runs to completion without prompting.**
 
 ## Version one
 
-Five background skills:
+Six background skills:
 
 | Skill             | What it covers                                                        |
 |-------------------|-----------------------------------------------------------------------|
@@ -65,6 +65,7 @@ Five background skills:
 | `templates`       | Twig naming, fragments, AssetMapper                                   |
 | `discover`        | Look it up in the project instead of recalling it (see below)         |
 | `components`      | Check for a Symfony component before hand-writing infrastructure      |
+| `services`        | Autowiring and DI: attributes over `services.yaml` entries            |
 
 Plus maker wrappers for `make-command`, `make-controller`, `make-crud`, `make-entity`,
 `make-form`, `make-listener`, `make-migration`, `make-test`, `make-twig-extension`,
