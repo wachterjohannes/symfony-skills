@@ -50,3 +50,7 @@ Refresh the snapshot with `bin/fetch` so the next run diffs against what you jus
 open a pull request whose description says which documentation change drove which skill
 edit. A reviewer should be able to check your judgement without re-reading the docs
 themselves.
+
+If a `docs-drift` issue triggered this, close it once the pull request is merged, stating
+the outcome — which skills changed, or that none had to. The workflow only reports; it
+never closes what it opened.
