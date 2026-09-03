@@ -27,6 +27,7 @@ Two kinds of skill, and the difference is the point.
 | [`configuration`](skills/configuration/SKILL.md) | env vars vs. parameters vs. constants vs. secrets |
 | [`templates`](skills/templates/SKILL.md) | Twig naming, fragments, AssetMapper |
 | [`discover`](skills/discover/SKILL.md) | look it up in the project instead of recalling it |
+| [`components`](skills/components/SKILL.md) | check for a Symfony component before hand-rolling infrastructure |
 
 **Maker wrappers** point at a MakerBundle command and cover what it cannot decide. They
 carry no PHP templates, because rebuilding `make:*` as a prompt is worse than running it:

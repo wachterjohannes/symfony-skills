@@ -1,8 +1,8 @@
 ---
 name: make-command
 description: Use when creating a console command in a Symfony project.
-version: 1.0.0
-updated: 2026-08-28
+version: 1.1.0
+updated: 2026-09-01
 symfony-versions: ">=6.4"
 ---
 
@@ -28,3 +28,7 @@ What remains yours:
   rather than `echo`, so the command behaves under `--quiet` and in a pipe.
 - Keep the logic in a service and let `execute()` orchestrate. A command is an entry point,
   the same as a controller.
+
+A command run from cron that must not overlap takes `symfony/lock`: inject `LockFactory`,
+or use `LockableTrait` when the command only locks itself. A flag file or a database
+column checked at start is not a lock.

@@ -56,7 +56,7 @@ if and only if it runs to completion without prompting.**
 
 ## Version one
 
-Four background skills:
+Five background skills:
 
 | Skill             | What it covers                                                        |
 |-------------------|-----------------------------------------------------------------------|
@@ -64,6 +64,7 @@ Four background skills:
 | `configuration`   | env vars vs. parameters vs. constants vs. secrets                     |
 | `templates`       | Twig naming, fragments, AssetMapper                                   |
 | `discover`        | Look it up in the project instead of recalling it (see below)         |
+| `components`      | Check for a Symfony component before hand-writing infrastructure      |
 
 Plus maker wrappers for `make-command`, `make-controller`, `make-crud`, `make-entity`,
 `make-form`, `make-listener`, `make-migration`, `make-test`, `make-twig-extension`,
@@ -312,7 +313,7 @@ Three suggestions worth adopting for the skill content:
    The key sentence: *"Before hand-writing infrastructure (locks, queues, caches, HTTP
    clients, mailers, schedulers…) or adding a third-party library, check whether a Symfony
    component covers it. It usually does."* — that is the answer to Alex's original problem
-   and belongs prominently in our skills.
+   and belongs prominently in our skills. This is the `components` skill.
 3. **A new "Discover, don't guess" section** — look it up in the project instead of
    recalling it: `bin/console about`, `debug:router`, `debug:container`,
    `debug:autowiring`, `debug:config`, `config:dump-reference`, `lint:container`,

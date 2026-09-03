@@ -9,6 +9,7 @@ covering one topic. Read a skill when its trigger applies; don't read them all u
 | `configuration` | deciding where a configuration value belongs | `skills/configuration/SKILL.md` |
 | `templates` | writing Twig, naming templates, adding CSS or JavaScript | `skills/templates/SKILL.md` |
 | `discover` | about to rely on memory for a Symfony API, route or service | `skills/discover/SKILL.md` |
+| `components` | about to hand-write a lock, queue, cache, HTTP client, mailer or scheduler, or add a library for one | `skills/components/SKILL.md` |
 | `make-command` | creating a console command | `skills/make-command/SKILL.md` |
 | `make-crud` | an entity needs list, show, create, edit and delete | `skills/make-crud/SKILL.md` |
 | `make-entity` | creating a Doctrine entity, or adding fields to one | `skills/make-entity/SKILL.md` |
