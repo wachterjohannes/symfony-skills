@@ -69,7 +69,8 @@ Six background skills:
 
 Plus maker wrappers for `make-command`, `make-controller`, `make-crud`, `make-entity`,
 `make-form`, `make-listener`, `make-migration`, `make-test`, `make-twig-extension`,
-`make-user` and `make-voter`.
+`make-user` and `make-voter` — and, since the second PR series started landing,
+`make-security-form-login`, `make-security-custom` and `make-webhook`.
 
 Entity and Crud were excluded while their makers needed a value that could not be passed in.
 Both landed. `make:test` and `make:listener` were never blocked at all — they take everything
@@ -86,18 +87,22 @@ Six pull requests against `symfony/maker-bundle` are merged,
 made it unusable non-interactively, `--with-tests` to `make:controller`, and fixed the failing
 tests on `1.x` on the way past.
 
-A second series is open under the same framing — a command that accepts `--no-interaction`
+A second series runs under the same framing — a command that accepts `--no-interaction`
 and then dies is broken, not merely inconvenient. Each PR moves the asked values into
 options; `interact()` asks only for what was not passed, so the interactive dialogue is
-unchanged. All five target `1.x`; #1819 builds on #1818, #1820 on both.
+unchanged. All five target `1.x`; #1819 builds on #1818, #1820 on both. The first three
+were merged on 2026-09-07 and their wrapper skills exist.
 
-| PR | Maker | Notes |
+| PR | Maker | Status |
 |---|---|---|
-| [#1816](https://github.com/symfony/maker-bundle/pull/1816) | `make:security:custom` | |
-| [#1817](https://github.com/symfony/maker-bundle/pull/1817) | `make:webhook` | |
-| [#1818](https://github.com/symfony/maker-bundle/pull/1818) | `make:security:form-login` | extracts the silent halves of the security guesses the two below also need |
-| [#1819](https://github.com/symfony/maker-bundle/pull/1819) | `make:reset-password` | seven options for seven asked values |
-| [#1820](https://github.com/symfony/maker-bundle/pull/1820) | `make:registration-form` | thirteen options; the largest and last of the series |
+| [#1816](https://github.com/symfony/maker-bundle/pull/1816) | `make:security:custom` | merged, skill exists |
+| [#1817](https://github.com/symfony/maker-bundle/pull/1817) | `make:webhook` | merged, skill exists |
+| [#1818](https://github.com/symfony/maker-bundle/pull/1818) | `make:security:form-login` | merged, skill exists |
+| [#1819](https://github.com/symfony/maker-bundle/pull/1819) | `make:reset-password` | open; seven options for seven asked values |
+| [#1820](https://github.com/symfony/maker-bundle/pull/1820) | `make:registration-form` | open; thirteen options, the largest and last of the series |
+
+Neither series is in a tagged maker-bundle release yet; the options exist on `1.x` only
+until the next one.
 
 `make:auth` needs no PR: it is deprecated in favour of the `make:security:*` commands, so
 fixing it would have been effort spent on a dead entry point — #1816 and #1818 are where
@@ -286,12 +291,10 @@ work is editorial and political, not infrastructural.
   strong models already do. Every skill costs description lines in context on every turn,
   so a flat benchmark result is a standing question: shorten the skill, or drop it. The
   core discussion should decide which skills earn their place, not only which are correct.
-- **Security and webhook wrappers, once the second maker series lands.**
-  [#1816](https://github.com/symfony/maker-bundle/pull/1816) through
-  [#1820](https://github.com/symfony/maker-bundle/pull/1820) unblock `make:security:custom`,
-  `make:webhook`, `make:security:form-login`, `make:reset-password` and
-  `make:registration-form` — five candidates for wrapper skills, by the same rule as the
-  existing ones.
+- **The last two wrappers, once #1819 and #1820 land.** Three of the second series'
+  five skills exist (`make-security-custom`, `make-webhook`, `make-security-form-login`);
+  `make-reset-password` and `make-registration-form` follow their merges, by the same
+  rule as the existing ones.
 - **Symfony Mate as the distribution channel.** Mate can override, enable and disable skills
   and keeps a lockfile, which is where a real update path belongs. Installing the `AGENTS.md`
   would fit there too.
@@ -362,9 +365,9 @@ contradict each other. Worth watching whether it lands in the PR as written.
 - Does Javier's `symfony console` suggestion land in the recipes PR?
 - Does this become an official Symfony repository, and via which distribution channel?
 - Which of the flat-benchmark skills (`make-voter`, `make-command`) survive the editing knife?
-- Does the second maker series ([#1816](https://github.com/symfony/maker-bundle/pull/1816)
-  through [#1820](https://github.com/symfony/maker-bundle/pull/1820)) get merged? Five
-  wrapper skills wait on it.
+- Do [#1819](https://github.com/symfony/maker-bundle/pull/1819) and
+  [#1820](https://github.com/symfony/maker-bundle/pull/1820) get merged? The last two
+  wrapper skills wait on them. And when does a maker-bundle release ship both series?
 
 (The maker-bundle questions — `--field`/`--relation` for `make:entity`,
 `--controller-class` for `make:crud` — are answered: the PRs are merged, see

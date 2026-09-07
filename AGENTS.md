@@ -22,6 +22,9 @@ covering one topic. Read a skill when its trigger applies; don't read them all u
 | `make-migration` | changing the database schema | `skills/make-migration/SKILL.md` |
 | `make-voter` | access depends on who is asking, not just on a role | `skills/make-voter/SKILL.md` |
 | `make-twig-extension` | a template needs a filter or function Twig lacks | `skills/make-twig-extension/SKILL.md` |
+| `make-security-form-login` | the application needs a login form | `skills/make-security-form-login/SKILL.md` |
+| `make-security-custom` | authentication that no built-in mechanism covers | `skills/make-security-custom/SKILL.md` |
+| `make-webhook` | receiving webhooks from an external service | `skills/make-webhook/SKILL.md` |
 
 If this project also has a Symfony `AGENTS.md` from the framework-bundle recipe, that file
 takes precedence. These skills deepen it; they never contradict it.
