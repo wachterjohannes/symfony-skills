@@ -99,8 +99,9 @@ drift as an issue.
 
 ## Relation to the framework-bundle `AGENTS.md`
 
-[symfony/recipes#1563](https://github.com/symfony/recipes/pull/1563) adds an `AGENTS.md` to
-new Symfony projects. Both artefacts stand on their own: that file works for someone who
+[symfony/recipes#1563](https://github.com/symfony/recipes/pull/1563) added an `AGENTS.md`
+to new Symfony projects (merged 2026-09-07, shipping with the framework-bundle 8.1
+recipe). Both artefacts stand on their own: that file works for someone who
 never installs a skill, and these skills work in a project without it. Where they overlap,
 **the recipe file wins** — a skill that contradicts it is a bug in the skill.
 

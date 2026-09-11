@@ -303,8 +303,12 @@ work is editorial and political, not infrastructural.
 ## Reference: `AGENTS.md` in the recipes PR
 
 [symfony/recipes#1563](https://github.com/symfony/recipes/pull/1563) —
-"[FrameworkBundle] Add AGENTS.md for AI coding agents", open. Not part of this repository,
-but it sets the content scope and the quality bar.
+"[FrameworkBundle] Add AGENTS.md for AI coding agents", **merged 2026-09-07** into the
+framework-bundle 8.1 recipe. Not part of this repository, but it sets the content scope
+and the quality bar. The merged file was checked against the skills: no contradiction —
+it carries the `symfony console` wording, the check-for-a-component sentence,
+`symfony/lock` and "a YAML service definition is the last resort", all of which the
+skills deepen.
 
 The PR also adds a minimal `CLAUDE.md` containing `@AGENTS.md`, so there is a single source
 of truth instead of duplicated content — the same principle we follow with the slim index.
@@ -358,11 +362,10 @@ The original draft used `bin/console` throughout, while the archived repository'
 > (or `bin/console` if the Symfony CLI is not available).
 
 We adopt that wording verbatim in `cli-conventions`, so the skeleton and the skills don't
-contradict each other. Worth watching whether it lands in the PR as written.
+contradict each other. It landed in the merged file as written.
 
 ## Open questions
 
-- Does Javier's `symfony console` suggestion land in the recipes PR?
 - Does this become an official Symfony repository, and via which distribution channel?
 - Which of the flat-benchmark skills (`make-voter`, `make-command`) survive the editing knife?
 - When does a maker-bundle release ship the two merged PR series? Until then the
