@@ -107,11 +107,17 @@ until the next one.
 
 `make:auth` needs no PR: it is deprecated in favour of the `make:security:*` commands, so
 fixing it would have been effort spent on a dead entry point — #1816 and #1818 are where
-that work went. That leaves one maker with no path yet:
+that work went.
 
-| Maker | What is missing |
-|---|---|
-| `make:schedule` | three questions, no arguments at all; `$scheduleName` is read uninitialised |
+`make:schedule` was the last crash:
+[#1826](https://github.com/symfony/maker-bundle/pull/1826) (merged 2026-09-11) moved its
+three answers into `--schedule-name`, `--message` and `--transport-name`. It gets **no
+wrapper skill**, and the reason only surfaced while writing that PR: the maker is
+deprecated since v1.63.0 in favour of the `symfony/scheduler` recipe, which ships a
+`src/Schedule.php` on install. Same call as `make:auth` — a skill pointing at a
+deprecated command would be a bug. The `components` skill already routes recurring jobs
+to `symfony/scheduler`, and the recipe does the rest. The PR was still worth making:
+deprecated is not removed, and a command that accepts `--no-interaction` must not crash.
 
 `make:docker-database` is deliberately left alone — infrastructure rather than a code pattern,
 so no skill would wrap it either way.

@@ -71,11 +71,15 @@ into options, and it is fully merged:
 [#1818](https://github.com/symfony/maker-bundle/pull/1818) (`make:security:form-login`),
 [#1819](https://github.com/symfony/maker-bundle/pull/1819) (`make:reset-password`) and
 [#1820](https://github.com/symfony/maker-bundle/pull/1820) (`make:registration-form`).
-All five have their skills above. `make:auth` needed no PR: it is deprecated in favour of
-the `make:security:*` commands. That leaves `make:schedule` as the one maker that still
-cannot run without a human.
+All five have their skills above.
+[#1826](https://github.com/symfony/maker-bundle/pull/1826) closed the last crash,
+`make:schedule` — which, like `make:auth`, gets no wrapper: both commands are deprecated
+(`make:auth` in favour of `make:security:*`, `make:schedule` in favour of the
+`symfony/scheduler` recipe, which creates a `src/Schedule.php` on install). A skill
+pointing at a deprecated command would be a bug; the [`components`](skills/components/SKILL.md)
+skill covers the scheduler path instead.
 
-One caveat: both series are merged into `1.x` but not yet in a tagged release — the
+One caveat: all of these PRs are merged into `1.x` but not yet in a tagged release — the
 latest maker-bundle release predates them all. Until the next release, the options these
 skills use exist only on the development branch.
 
