@@ -16,6 +16,7 @@
     { "path": "security.rst",              "skills": ["make-user", "make-security-form-login"] },
     { "path": "security/voters.rst",       "skills": ["make-voter"] },
     { "path": "security/custom_authenticator.rst", "skills": ["make-security-custom"] },
+    { "path": "security/passwords.rst",    "skills": ["make-reset-password", "make-registration-form"] },
     { "path": "webhook.rst",               "skills": ["make-webhook"] },
     { "path": "forms.rst",                 "skills": ["make-form"] },
     { "path": "testing.rst",               "skills": ["make-test"] },

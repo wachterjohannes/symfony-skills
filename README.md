@@ -49,6 +49,8 @@ carry no PHP templates, because rebuilding `make:*` as a prompt is worse than ru
 | [`make-security-form-login`](skills/make-security-form-login/SKILL.md) | `make:security:form-login` |
 | [`make-security-custom`](skills/make-security-custom/SKILL.md) | `make:security:custom` |
 | [`make-webhook`](skills/make-webhook/SKILL.md) | `make:webhook` |
+| [`make-reset-password`](skills/make-reset-password/SKILL.md) | `make:reset-password` |
+| [`make-registration-form`](skills/make-registration-form/SKILL.md) | `make:registration-form` |
 
 ### Which makers get a wrapper
 
@@ -62,16 +64,16 @@ supplied, which is why `make:form` and `make:user` were wrongly excluded for a w
 [#1814](https://github.com/symfony/maker-bundle/pull/1814) added `--controller-class` and
 fixed the crash that made `make:crud` unusable under `--no-interaction`.
 
-A second PR series fixes the crash under `--no-interaction` by moving the asked values
-into options. Three are merged and have their skills above:
+A second PR series fixed the crash under `--no-interaction` by moving the asked values
+into options, and it is fully merged:
 [#1816](https://github.com/symfony/maker-bundle/pull/1816) (`make:security:custom`),
-[#1817](https://github.com/symfony/maker-bundle/pull/1817) (`make:webhook`) and
-[#1818](https://github.com/symfony/maker-bundle/pull/1818) (`make:security:form-login`).
-Two are still open: [#1819](https://github.com/symfony/maker-bundle/pull/1819)
-(`make:reset-password`) and [#1820](https://github.com/symfony/maker-bundle/pull/1820)
-(`make:registration-form`); their skills follow the merge. `make:auth` is deprecated in
-favour of the `make:security:*` commands, so its share of the work lives there. That
-leaves `make:schedule` as the one maker with no PR yet.
+[#1817](https://github.com/symfony/maker-bundle/pull/1817) (`make:webhook`),
+[#1818](https://github.com/symfony/maker-bundle/pull/1818) (`make:security:form-login`),
+[#1819](https://github.com/symfony/maker-bundle/pull/1819) (`make:reset-password`) and
+[#1820](https://github.com/symfony/maker-bundle/pull/1820) (`make:registration-form`).
+All five have their skills above. `make:auth` needed no PR: it is deprecated in favour of
+the `make:security:*` commands. That leaves `make:schedule` as the one maker that still
+cannot run without a human.
 
 One caveat: both series are merged into `1.x` but not yet in a tagged release — the
 latest maker-bundle release predates them all. Until the next release, the options these

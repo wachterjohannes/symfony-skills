@@ -25,6 +25,8 @@ covering one topic. Read a skill when its trigger applies; don't read them all u
 | `make-security-form-login` | the application needs a login form | `skills/make-security-form-login/SKILL.md` |
 | `make-security-custom` | authentication that no built-in mechanism covers | `skills/make-security-custom/SKILL.md` |
 | `make-webhook` | receiving webhooks from an external service | `skills/make-webhook/SKILL.md` |
+| `make-reset-password` | users need a forgot-password flow | `skills/make-reset-password/SKILL.md` |
+| `make-registration-form` | the application needs self-service registration | `skills/make-registration-form/SKILL.md` |
 
 If this project also has a Symfony `AGENTS.md` from the framework-bundle recipe, that file
 takes precedence. These skills deepen it; they never contradict it.
