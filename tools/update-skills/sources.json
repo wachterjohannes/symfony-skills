@@ -6,6 +6,7 @@
     { "path": "service_container.rst",     "skills": ["services"] },
     { "path": "service_container/autowiring.rst", "skills": ["services"] },
     { "path": "service_container/tags.rst", "skills": ["services"] },
+    { "path": "service_container/decoration.rst", "skills": ["make-decorator"] },
     { "path": "configuration.rst",         "skills": ["configuration"] },
     { "path": "templates.rst",             "skills": ["templates", "make-twig-extension"] },
     { "path": "frontend/asset_mapper.rst", "skills": ["templates"] },
