@@ -51,6 +51,7 @@ carry no PHP templates, because rebuilding `make:*` as a prompt is worse than ru
 | [`make-webhook`](skills/make-webhook/SKILL.md) | `make:webhook` |
 | [`make-reset-password`](skills/make-reset-password/SKILL.md) | `make:reset-password` |
 | [`make-registration-form`](skills/make-registration-form/SKILL.md) | `make:registration-form` |
+| [`make-decorator`](skills/make-decorator/SKILL.md) | `make:decorator` |
 
 ### Which makers get a wrapper
 
@@ -79,9 +80,16 @@ All five have their skills above.
 pointing at a deprecated command would be a bug; the [`components`](skills/components/SKILL.md)
 skill covers the scheduler path instead.
 
-One caveat: all of these PRs are merged into `1.x` but not yet in a tagged release — the
-latest maker-bundle release predates them all. Until the next release, the options these
-skills use exist only on the development branch.
+All of it shipped in maker-bundle
+[v1.68.0](https://github.com/symfony/maker-bundle/releases/tag/1.68.0) (2026-09-12).
+Skills that depend on options or output from that release say so in their frontmatter
+(`maker-bundle-versions: ">=1.68"`). Note that 1.68 itself requires Symfony 7.4 and
+PHP 8.2.
+
+The same release changed two makers and added one. `make:command` now generates invokable
+commands and takes `--argument`/`--option`, `make:twig-extension` generates
+attribute-based extensions, and both skills were rewritten to match. The new
+`make:decorator` runs non-interactively out of the box, so it has its wrapper above.
 
 ## Installing
 

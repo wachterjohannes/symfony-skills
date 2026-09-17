@@ -1,9 +1,10 @@
 ---
 name: make-twig-extension
 description: Use when a template needs a filter or function that Twig does not provide.
-version: 1.0.0
-updated: 2026-08-28
-symfony-versions: ">=6.4"
+version: 2.0.0
+updated: 2026-09-17
+symfony-versions: ">=7.4"
+maker-bundle-versions: ">=1.68"
 ---
 
 # Twig extension
@@ -24,9 +25,14 @@ available, filters and functions included.
 
 ## What to keep
 
-The maker generates an extension plus a separate runtime class. Keep that split: the
-extension only declares names, the runtime holds the implementation and its dependencies, so
-nothing is instantiated for a template that never calls it.
+Since maker-bundle 1.68 the extension is a single class. Each filter or function is a
+method marked `#[AsTwigFilter('name')]` or `#[AsTwigFunction('name')]`. There is no
+`getFilters()` list, no separate runtime class, and nothing to register: the attributes do
+all of it, and Twig still instantiates the class only when a template calls one of its
+names. Do not reintroduce the old `AbstractExtension` shape.
+
+A filter that produces safe HTML declares it, otherwise its output gets escaped:
+`#[AsTwigFilter('name', isSafe: ['html'])]`.
 
 Presentation logic only. A filter that queries the database has moved business logic into
 the template layer.

@@ -4,6 +4,7 @@ description: Use when the application needs a server-rendered login form.
 version: 1.0.0
 updated: 2026-09-07
 symfony-versions: ">=6.4"
+maker-bundle-versions: ">=1.68"
 ---
 
 # Form login

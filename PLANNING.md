@@ -102,8 +102,17 @@ unchanged. All five targeted `1.x` and all five are merged — #1816 to #1818 on
 | [#1819](https://github.com/symfony/maker-bundle/pull/1819) | `make:reset-password` |
 | [#1820](https://github.com/symfony/maker-bundle/pull/1820) | `make:registration-form` |
 
-Neither series is in a tagged maker-bundle release yet; the options exist on `1.x` only
-until the next one.
+Both series and #1826 shipped in
+[v1.68.0](https://github.com/symfony/maker-bundle/releases/tag/1.68.0) (2026-09-12),
+which requires Symfony 7.4 and PHP 8.2. Skills that need that release carry
+`maker-bundle-versions: ">=1.68"` in their frontmatter.
+
+v1.68.0 also changed the output of two wrapped makers, so their skills were rewritten:
+`make:command` generates invokable commands (`__invoke()` with `#[Argument]`/`#[Option]`
+parameters) and takes repeatable `--argument`/`--option` flags, and
+`make:twig-extension` generates a single attribute-based class with no runtime split.
+And it added `make:decorator`, which takes both of its values as arguments and runs
+non-interactively out of the box, so it got the `make-decorator` wrapper on day one.
 
 `make:auth` needs no PR: it is deprecated in favour of the `make:security:*` commands, so
 fixing it would have been effort spent on a dead entry point — #1816 and #1818 are where
@@ -151,6 +160,7 @@ themselves, and for Codex it is just a block at the top of the file.
 | `version`          | so a change is attributable                                  |
 | `updated`          | date of the last content change                              |
 | `symfony-versions` | which Symfony versions this skill holds for — required       |
+| `maker-bundle-versions` | the maker-bundle release whose options or output the skill relies on — only on wrappers that need one |
 
 `description` deserves the attention. It is the only field an agent keeps in context for
 every skill at once; everything else loads on demand. It therefore decides on its own
@@ -298,9 +308,6 @@ work is editorial and political, not infrastructural.
   strong models already do. Every skill costs description lines in context on every turn,
   so a flat benchmark result is a standing question: shorten the skill, or drop it. The
   core discussion should decide which skills earn their place, not only which are correct.
-- **A maker-bundle release.** Both PR series are merged but no tag carries them; every
-  option the wrapper skills use exists only on `1.x` until one ships. That release is
-  the single external event the skill set still waits on.
 - **Symfony Mate as the distribution channel.** Mate can override, enable and disable skills
   and keeps a lockfile, which is where a real update path belongs. Installing the `AGENTS.md`
   would fit there too.
@@ -374,8 +381,6 @@ contradict each other. It landed in the merged file as written.
 
 - Does this become an official Symfony repository, and via which distribution channel?
 - Which of the flat-benchmark skills (`make-voter`, `make-command`) survive the editing knife?
-- When does a maker-bundle release ship the two merged PR series? Until then the
-  wrapper options exist only on `1.x`.
 
 (The maker-bundle questions — `--field`/`--relation` for `make:entity`,
 `--controller-class` for `make:crud` — are answered: the PRs are merged, see

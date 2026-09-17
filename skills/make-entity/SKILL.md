@@ -4,6 +4,7 @@ description: Use when creating a Doctrine entity or adding fields and relations 
 version: 1.0.0
 updated: 2026-08-31
 symfony-versions: ">=6.4"
+maker-bundle-versions: ">=1.68"
 ---
 
 # Doctrine entity

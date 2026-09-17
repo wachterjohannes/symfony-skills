@@ -4,6 +4,7 @@ description: Use when the application should receive webhooks from an external s
 version: 1.0.0
 updated: 2026-09-07
 symfony-versions: ">=6.4"
+maker-bundle-versions: ">=1.68"
 ---
 
 # Webhook receiver

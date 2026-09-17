@@ -4,6 +4,7 @@ description: Use when an entity needs the full set of list, show, create, edit a
 version: 1.0.0
 updated: 2026-08-31
 symfony-versions: ">=6.4"
+maker-bundle-versions: ">=1.68"
 ---
 
 # CRUD for an entity

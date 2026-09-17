@@ -4,6 +4,7 @@ description: Use when the application needs self-service user registration.
 version: 1.0.0
 updated: 2026-09-11
 symfony-versions: ">=6.4"
+maker-bundle-versions: ">=1.68"
 ---
 
 # Registration form
