@@ -28,6 +28,7 @@ covering one topic. Read a skill when its trigger applies; don't read them all u
 | `make-reset-password` | users need a forgot-password flow | `skills/make-reset-password/SKILL.md` |
 | `make-registration-form` | the application needs self-service registration | `skills/make-registration-form/SKILL.md` |
 | `make-decorator` | changing a service's behavior without editing its class | `skills/make-decorator/SKILL.md` |
+| `make-ci` | setting up a CI pipeline for tests, linting or static analysis | `skills/make-ci/SKILL.md` |
 
 If this project also has a Symfony `AGENTS.md` from the framework-bundle recipe, that file
 takes precedence. These skills deepen it; they never contradict it.

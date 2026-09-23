@@ -114,6 +114,15 @@ parameters) and takes repeatable `--argument`/`--option` flags, and
 And it added `make:decorator`, which takes both of its values as arguments and runs
 non-interactively out of the box, so it got the `make-decorator` wrapper on day one.
 
+`make:ci` ([#1837](https://github.com/symfony/maker-bundle/pull/1837), merged
+2026-09-23) is the first maker whose wrapper existed on merge day. The review during the
+PR applied the series pattern before the merge: `--platform` is required
+non-interactively, `--php-version`, `--branch` and `--database` carry the other answers,
+and an existing CI file is refused rather than overwritten. No tag carries it yet; the
+skill assumes the next release is 1.69 in its `maker-bundle-versions` field, to be
+verified when it ships. The skill cites no docs page, the maker itself is its source, so
+it has no drift-watch entry.
+
 `make:auth` needs no PR: it is deprecated in favour of the `make:security:*` commands, so
 fixing it would have been effort spent on a dead entry point — #1816 and #1818 are where
 that work went.

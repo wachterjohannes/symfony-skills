@@ -52,6 +52,7 @@ carry no PHP templates, because rebuilding `make:*` as a prompt is worse than ru
 | [`make-reset-password`](skills/make-reset-password/SKILL.md) | `make:reset-password` |
 | [`make-registration-form`](skills/make-registration-form/SKILL.md) | `make:registration-form` |
 | [`make-decorator`](skills/make-decorator/SKILL.md) | `make:decorator` |
+| [`make-ci`](skills/make-ci/SKILL.md) | `make:ci` |
 
 ### Which makers get a wrapper
 
@@ -90,6 +91,10 @@ The same release changed two makers and added one. `make:command` now generates 
 commands and takes `--argument`/`--option`, `make:twig-extension` generates
 attribute-based extensions, and both skills were rewritten to match. The new
 `make:decorator` runs non-interactively out of the box, so it has its wrapper above.
+
+[#1837](https://github.com/symfony/maker-bundle/pull/1837) added `make:ci` after that
+release. It runs non-interactively from the start, so its wrapper is above too, but its
+options exist only on `1.x` until the next tag.
 
 ## Installing
 
