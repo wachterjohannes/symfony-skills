@@ -1,8 +1,8 @@
 ---
 name: components
-description: Use before hand-writing infrastructure such as a lock, a queue, a cache, an HTTP client, mail, scheduling or rate limiting, or before adding a third-party library for one of these.
-version: 1.0.0
-updated: 2026-09-01
+description: Use before hand-writing infrastructure or utilities such as a lock, a queue, a cache, an HTTP client, mail, scheduling, rate limiting, shell commands, slugs or file searches, or before adding a third-party library for one of these.
+version: 1.1.0
+updated: 2026-09-23
 symfony-versions: ">=6.4"
 ---
 
@@ -26,6 +26,10 @@ version costs whoever maintains it.
 | a status field with rules about transitions | `symfony/workflow` |
 | unique identifiers | `symfony/uid`: `Uuid` or `Ulid` |
 | time you need to control in tests | `symfony/clock`: `ClockInterface`, `ClockAwareTrait` |
+| running an external program | `symfony/process`: `Process`, never `exec()` or `shell_exec()` |
+| a URL-safe slug from a title | `symfony/string`: `SluggerInterface`, not a `preg_replace` chain |
+| mapping JSON or arrays to objects | `symfony/serializer` |
+| finding files by pattern or age | `symfony/finder`: `Finder`, not a hand-rolled recursive iterator |
 
 ## Using one
 

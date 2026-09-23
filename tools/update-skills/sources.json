@@ -31,6 +31,10 @@
     { "path": "rate_limiter.rst",          "skills": ["components"] },
     { "path": "workflow.rst",              "skills": ["components"] },
     { "path": "components/uid.rst",        "skills": ["components"] },
-    { "path": "components/clock.rst",      "skills": ["components"] }
+    { "path": "components/clock.rst",      "skills": ["components"] },
+    { "path": "components/process.rst",    "skills": ["components"] },
+    { "path": "string.rst",                "skills": ["components"] },
+    { "path": "serializer.rst",            "skills": ["components"] },
+    { "path": "components/finder.rst",     "skills": ["components"] }
   ]
 }
